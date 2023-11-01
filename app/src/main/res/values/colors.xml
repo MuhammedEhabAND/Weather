@@ -122,6 +122,8 @@
     <color name="DarkSlateBlue">#483D8B</color>
     <color name="SteelBlue">#4682B4</color>
     <color name="RoyalBlue">#4169E1</color>
+    <color name="lightBlue">#47BFDF</color>
+    <color name="darkBlue">#4A91FF</color>
     <color name="Turquoise">#40E0D0</color>
     <color name="MediumSeaGreen">#3CB371</color>
     <color name="LimeGreen">#32CD32</color>
