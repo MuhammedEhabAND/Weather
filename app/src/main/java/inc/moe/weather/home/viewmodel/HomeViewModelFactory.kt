@@ -1,4 +1,4 @@
-package inc.moe.weather.viewmodel
+package inc.moe.weather.home.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

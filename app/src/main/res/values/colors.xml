@@ -124,6 +124,11 @@
     <color name="RoyalBlue">#4169E1</color>
     <color name="lightBlue">#47BFDF</color>
     <color name="darkBlue">#4A91FF</color>
+
+    <color name="startColor">#1F7BE3</color>
+    <color name="endColorLight">#F2A964</color>
+    <color name="endColorDark">#112E6B</color>
+
     <color name="Turquoise">#40E0D0</color>
     <color name="MediumSeaGreen">#3CB371</color>
     <color name="LimeGreen">#32CD32</color>
@@ -149,4 +154,10 @@
     <color name="DarkBlue">#00008B</color>
     <color name="Navy">#000080</color>
     <color name="Black">#000000</color>
+
+    <color name="startPurple">#6074E5</color>
+    <color name="endPurple">#6235BE</color>
+    <color name="textColor">#7B93F4</color>
+
+
 </resources>

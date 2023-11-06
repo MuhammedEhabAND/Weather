@@ -18,7 +18,7 @@ class Repo private constructor(var remoteSource: RemoteSource)  : IRepo {
         }
     }
 
-    override suspend fun getWeather(lon: Double, lat: Double) = remoteSource.getWeather(lon,lat)
+    override suspend fun getWeather(lon: String, lat: String, units:String) = remoteSource.getWeather(lon,lat,units)
 
 
 }
