@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    app:cardElevation="8dp"
+    app:cardUseCompatPadding="true"
+    app:cardCornerRadius="8dp"
+    android:layout_height="wrap_content"
+    android:backgroundTint="@color/white"
+    >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_margin="10sp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="5dp"
+            app:srcCompat="@drawable/rainy"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+
+            app:layout_constraintTop_toBottomOf="@id/day"
+            />
+
+        <TextView
+            android:id="@+id/day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tue"
+            android:textColor="@color/DarkGray"
+            android:textSize="12sp"
+            app:layout_constraintVertical_bias="0.461"
+            app:layout_constraintBottom_toTopOf="@id/icon"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="@id/icon"
+            app:layout_constraintEnd_toEndOf="@id/icon"/>
+
+        <TextView
+
+            android:id="@+id/weatherType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Clear"
+            android:textColor="@color/DarkGray"
+            android:textSize="12sp"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toStartOf="@id/icon"
+            app:layout_constraintTop_toBottomOf="@+id/icon"
+            app:layout_constraintEnd_toEndOf="@id/icon"
+            />
+
+        <TextView
+            android:id="@+id/highestAndLowest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="31 / 18 "
+            android:textColor="@color/DarkGray"
+            android:textSize="10sp"
+            app:layout_constraintStart_toStartOf="@id/icon"
+            app:layout_constraintEnd_toEndOf="@id/icon"
+            app:layout_constraintTop_toBottomOf="@id/weatherType"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

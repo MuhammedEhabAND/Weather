@@ -3,27 +3,27 @@ package inc.moe.weather.model
 
 data class Daily(
     val dt: Long,
-    val sunrise: Long,
-    val sunset: Long,
-    val moonrise: Long,
-    val moonset: Long,
+    val sunrise: Double,
+    val sunset: Double,
+    val moonrise: Double,
+    val moonset: Double,
 
     val moon_phase: Double,
     val temp: Temp,
 
     val feels_like: FeelsLike,
-    val pressure: Long,
-    val humidity: Long,
+    val pressure: Double,
+    val humidity: Double,
 
     val dew_point: Double,
 
     val wind_speed: Double,
 
-    val wind_deg: Long,
+    val wind_deg: Double,
 
     val wind_gust: Double,
     val weather: List<Weather>,
-    val clouds: Long,
-    val pop: Long,
+    val clouds: Double,
+    val pop: Double,
     val uvi: Double,
 )

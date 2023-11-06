@@ -2,6 +2,8 @@ package inc.moe.weather.repo
 
 import inc.moe.weather.model.WeatherResponse
 import inc.moe.weather.network.RemoteSource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class Repo private constructor(var remoteSource: RemoteSource)  : IRepo {
 
@@ -18,7 +20,9 @@ class Repo private constructor(var remoteSource: RemoteSource)  : IRepo {
         }
     }
 
-    override suspend fun getWeather(lon: Double, lat: Double) = remoteSource.getWeather(lon,lat)
-
+    override  fun getWeather(lon: String, lat: String, units:String): Flow<WeatherResponse> = flow {
+        val weatherResponse = remoteSource.getWeather(lon,lat,units)
+        emit( weatherResponse)
+    }
 
 }
