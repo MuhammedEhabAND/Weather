@@ -12,4 +12,10 @@
     <string name="daily_forecast">Daily Forecast</string>
     <string name="more_details_title">More Details</string>
     <string name="try_again">Try Again</string>
+    <string name="home_bottom_icon">Home</string>
+    <string name="fav_bottom_icon">Favourite</string>
+    <string name="settings_icon">Settings</string>
+    <string name="allow_btn">Allow</string>
+    <string name="no_location_permission">We cannot fetch your location.
+    Please allow Weather to access your location</string>
 </resources>

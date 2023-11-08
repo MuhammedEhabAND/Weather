@@ -8,6 +8,16 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="inc.moe.weather.home.view.HomeFragment"
-        android:label="Home"
+        android:label="@string/home_bottom_icon"
         tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/favFragment"
+        android:name="inc.moe.weather.favourite.view.FavFragment"
+        android:label="@string/fav_bottom_icon"
+        tools:layout="@layout/fragment_fav" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="inc.moe.weather.settings.view.SettingsFragment"
+        android:label="@string/settings_icon"
+        tools:layout="@layout/fragment_settings" />
 </navigation>
