@@ -20,4 +20,9 @@
         android:name="inc.moe.weather.settings.view.SettingsFragment"
         android:label="@string/settings_icon"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="inc.moe.weather.map.view.MapFragment"
+        android:label="fragment_map"
+        tools:layout="@layout/fragment_map" />
 </navigation>

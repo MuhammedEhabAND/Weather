@@ -2,15 +2,15 @@ package inc.moe.weather.db
 
 import androidx.room.*
 import inc.moe.weather.model.DatabaseWeather
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WeatherDao {
-    @Query("SELECT * FROM weather WHERE isCached = 0 ORDER BY timeZone ASC")
-    suspend fun getAllFavWeather():List<DatabaseWeather>
-    @Query("SELECT * FROM weather WHERE isCached = 1  LIMIT 1")
-    suspend fun getCachedWeather():DatabaseWeather
+    @Query("SELECT * FROM weather ORDER BY timeZone ASC")
+    fun getAllFavWeather(): Flow<List<DatabaseWeather>>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addWeather(weather: DatabaseWeather)
+    suspend fun addWeather(weather: DatabaseWeather):Long
     @Delete
-    suspend fun deleteWeather(weather: DatabaseWeather)
+    suspend fun deleteWeather(weather: DatabaseWeather):Int
 }

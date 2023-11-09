@@ -1,5 +1,6 @@
 package inc.moe.weather.model
 
+import java.io.Serializable
 
 
 data class WeatherResponse(
@@ -11,7 +12,7 @@ data class WeatherResponse(
     val minutely: List<Minutely>,
     val hourly: List<Hourly>,
     val daily: List<Daily>,
-    )
+    ):Serializable
 
 
 

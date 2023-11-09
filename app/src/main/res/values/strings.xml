@@ -16,6 +16,7 @@
     <string name="fav_bottom_icon">Favourite</string>
     <string name="settings_icon">Settings</string>
     <string name="allow_btn">Allow</string>
+    <string name="cached_data">Check your network please </string>
     <string name="no_location_permission">We cannot fetch your location.
     Please allow Weather to access your location</string>
 </resources>

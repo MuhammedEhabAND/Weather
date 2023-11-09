@@ -1,5 +1,7 @@
 package inc.moe.weather.model
 
+import java.io.Serializable
+
 
 data class Daily(
     val dt: Long,
@@ -26,4 +28,4 @@ data class Daily(
     val clouds: Double,
     val pop: Double,
     val uvi: Double,
-)
+): Serializable

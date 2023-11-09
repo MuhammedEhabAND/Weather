@@ -24,9 +24,12 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.material.snackbar.Snackbar
+import inc.moe.notesapp.database.WeatherLocalSource
 import inc.moe.weather.PERMISSION_ID
 import inc.moe.weather.R
 import inc.moe.weather.databinding.FragmentHomeBinding
+import inc.moe.weather.db.AppDatabase
 import inc.moe.weather.getDate
 import inc.moe.weather.getDateForHourly
 import inc.moe.weather.getImage
@@ -69,8 +72,10 @@ class HomeFragment : Fragment() {
             this,
             HomeViewModelFactory(
                 Repo.getInstance(
-                    WeatherClient()
-                )
+                    WeatherClient(),
+                    WeatherLocalSource.getInstance(requireContext())
+                    )
+
             )
         )
 
@@ -177,7 +182,9 @@ class HomeFragment : Fragment() {
     private fun showData(result: ApiState.Success) {
 
         animateSuccessViews()
-
+        if(result.isCached == "cached"){
+            Snackbar.make(requireView() , getString(R.string.cached_data) ,Snackbar.LENGTH_SHORT).show()
+        }
         homeViewBinding.mapIcon.setImageResource(R.drawable.baseline_my_location_24)
 
         homeViewBinding.errorCardView.visibility = View.GONE

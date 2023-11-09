@@ -11,6 +11,7 @@ import inc.moe.weather.model.WeatherResponse
 import inc.moe.weather.network.API
 import inc.moe.weather.network.ApiState
 import inc.moe.weather.repo.IRepo
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -28,18 +29,25 @@ class HomeViewModel(private val iRepo: IRepo) : ViewModel() {
 
 
     fun getCurrentWeather() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             if (isPermissionGranted) {
                 resetWeatherResponse()
 
 
                 iRepo.getWeather(lat = lat, lon = lon, units = unit)
                 .catch { e ->
-                    _weatherResponse.value = ApiState.Failure(e.message.toString())
+                    if(iRepo.readCachedWeatherData()==null) {
+                        _weatherResponse.value = ApiState.Failure(e.message.toString())
+                    }else{
+                        _weatherResponse.value =ApiState.Success(iRepo.readCachedWeatherData()!!,"cached")
+                    }
                 }
-                .collect { data ->
-                    _weatherResponse.value = ApiState.Success(data)
-                }
+                .collect {
+
+                        data ->
+                        _weatherResponse.value = ApiState.Success(data)
+                        iRepo.cacheWeatherData(weatherData =  data)
+                    }
             } else {
                 resetWeatherResponse()
 

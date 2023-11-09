@@ -1,9 +1,11 @@
 package inc.moe.notesapp.database
 
 import android.content.Context
+import android.util.Log
 import inc.moe.weather.db.AppDatabase
 import inc.moe.weather.db.WeatherDao
 import inc.moe.weather.model.DatabaseWeather
+import kotlinx.coroutines.flow.Flow
 
 class WeatherLocalSource private constructor(var context: Context) : IWeatherLocalSource {
 
@@ -25,20 +27,20 @@ class WeatherLocalSource private constructor(var context: Context) : IWeatherLoc
         }
     }
 
-    override suspend fun addWeather(weather: DatabaseWeather) {
-        weatherDao.addWeather(weather)
+    override suspend fun addWeather(weather: DatabaseWeather):Long {
+       return weatherDao.addWeather(weather)
+
+
     }
 
-    override suspend fun deleteWeather(weather: DatabaseWeather) {
-        weatherDao.deleteWeather(weather)
+    override suspend fun deleteWeather(weather: DatabaseWeather):Int {
+        return weatherDao.deleteWeather(weather)
     }
 
-    override suspend fun getAllFavWeathers(): List<DatabaseWeather> {
-        return  getAllFavWeathers()
+    override  fun getAllFavWeathers(): Flow<List<DatabaseWeather>> {
+        return  weatherDao.getAllFavWeather()
     }
 
-    override suspend fun getCacheWeathers(): DatabaseWeather {
-        return getCacheWeathers()
-    }
+
 
 }

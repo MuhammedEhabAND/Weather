@@ -6,13 +6,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Database
+import com.bumptech.glide.Glide
 import inc.moe.weather.R
 import inc.moe.weather.databinding.FavItemLayoutBinding
+import inc.moe.weather.getImage
+import inc.moe.weather.model.DatabaseWeather
 import inc.moe.weather.model.DummyFav
 import inc.moe.weather.model.Weather
 
 
-class FavAdapter : ListAdapter<DummyFav, FavAdapter.ViewHolder>(
+class FavAdapter : ListAdapter<DatabaseWeather, FavAdapter.ViewHolder>(
     FavDiffUtil()
 ) {
 
@@ -43,12 +47,16 @@ class FavAdapter : ListAdapter<DummyFav, FavAdapter.ViewHolder>(
 
     }
 
-    private fun showData(holder: ViewHolder, dummyFav: DummyFav) {
+    private fun showData(holder: ViewHolder, dummyFav: DatabaseWeather) {
         holder.binding.let {
-            it.titleTv.text = dummyFav.title
+            it.titleTv.text = dummyFav.timeZone
             it.weatherType.text = dummyFav.weatherType
             it.contentTv.text="${dummyFav.temp.toInt()}℃"
-            it.logoIv.setImageResource(R.drawable.cloudy)
+            Glide.with(it.logoIv)
+                .load(getImage(dummyFav.image, 4))
+                .placeholder(R.drawable.place_holder)
+                .error(R.drawable.error_weather)
+                .into(it.logoIv)
         }
     }
 
@@ -88,12 +96,12 @@ class FavAdapter : ListAdapter<DummyFav, FavAdapter.ViewHolder>(
 
 
     class FavDiffUtil
-        : DiffUtil.ItemCallback<DummyFav>() {
-        override fun areItemsTheSame(oldItem: DummyFav, newItem: DummyFav): Boolean {
+        : DiffUtil.ItemCallback<DatabaseWeather>() {
+        override fun areItemsTheSame(oldItem: DatabaseWeather, newItem: DatabaseWeather): Boolean {
             return oldItem === newItem
         }
 
-        override fun areContentsTheSame(oldItem: DummyFav, newItem: DummyFav): Boolean {
+        override fun areContentsTheSame(oldItem: DatabaseWeather, newItem: DatabaseWeather): Boolean {
             return oldItem == newItem
         }
 

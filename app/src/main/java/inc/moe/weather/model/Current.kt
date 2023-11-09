@@ -1,5 +1,7 @@
 package inc.moe.weather.model
 
+import java.io.Serializable
+
 data class Current(
     val dt: Long,
     val sunrise: Long,
@@ -16,4 +18,4 @@ data class Current(
     val wind_deg: Long,
     val wind_gust: Double,
     val weather: List<Weather>,
-)
+): Serializable

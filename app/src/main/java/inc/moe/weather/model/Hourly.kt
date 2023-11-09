@@ -1,5 +1,7 @@
 package inc.moe.weather.model
 
+import java.io.Serializable
+
 
 data class Hourly(
     val dt: Long,
@@ -20,4 +22,4 @@ data class Hourly(
     val wind_gust: Double,
     val weather: List<Weather>,
     val pop: Long,
-)
+): Serializable

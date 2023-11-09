@@ -24,9 +24,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         homeActivityViewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(homeActivityViewBinding.root)
 
+        Constants.cacheDirectory = this.cacheDir.absolutePath.toString()
         navController = findNavController(this, R.id.nav_host_fragment)
         val bottomNavBar = homeActivityViewBinding.navigatorBar  as NavigationBarView
         setupWithNavController(bottomNavBar, navController)
