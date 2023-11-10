@@ -1,6 +1,7 @@
 package inc.moe.weather.repo
 
 import android.util.Log
+import inc.moe.notesapp.database.IWeatherLocalSource
 import inc.moe.notesapp.database.WeatherLocalSource
 import inc.moe.weather.Constants
 import inc.moe.weather.model.DatabaseWeather
@@ -19,13 +20,13 @@ import java.io.ObjectOutputStream
 
 class Repo private constructor(
     private val remoteSource: RemoteSource,
-    private val localSource: WeatherLocalSource,
+    private val localSource: IWeatherLocalSource,
 ) : IRepo {
 
     companion object {
         @Volatile
         private var INSTANCE: Repo? = null
-        fun getInstance(remoteSource: RemoteSource, localSource: WeatherLocalSource): Repo {
+        fun getInstance(remoteSource: RemoteSource, localSource: IWeatherLocalSource): Repo {
             return INSTANCE ?: synchronized(this) {
                 val instance = Repo(remoteSource, localSource)
                 INSTANCE = instance

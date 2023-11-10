@@ -5,10 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -113,8 +113,8 @@ class MapFragment : Fragment() {
 
         val mapEventsReceiver = object : MapEventsReceiver {
             override fun singleTapConfirmedHelper(p: GeoPoint): Boolean {
-                val latitude = String.format("%.2f", p.latitude).toDouble()
-                val longitude = String.format("%.2f", p.longitude).toDouble()
+                val latitude = String.format("%.2f", p.latitude)
+                val longitude = String.format("%.2f", p.longitude)
 
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle("Add location to favorite")
@@ -123,13 +123,19 @@ class MapFragment : Fragment() {
                         dialog.dismiss()
                     }
                     .setPositiveButton("Ok") { dialog, which ->
-                        mapViewModel.getWeather(lat = p.latitude.toString(), lon =p.longitude.toString())
+                        mapViewModel.getWeather(lat = latitude , lon =latitude )
                         dialog.dismiss()
                         lifecycleScope.launch {
                             mapViewModel.weatherResponse.collectLatest {
                                 result->when(result){
-                                    is ApiState.Success -> { findNavController().navigateUp()}
-                                    is ApiState.Failure -> { Snackbar.make(requireView() , result.message , Snackbar.LENGTH_SHORT).show()}
+                                    is ApiState.Success -> {
+                                        findNavController().navigateUp()
+                                    }
+                                    is ApiState.Failure -> {
+
+                                        Toast.makeText(requireContext() , "Succeed" ,Toast.LENGTH_SHORT).show()
+
+                                        Snackbar.make(requireView() , result.message , Snackbar.LENGTH_SHORT).show()}
                                     is ApiState.Loading -> {}
                                 }
                             }

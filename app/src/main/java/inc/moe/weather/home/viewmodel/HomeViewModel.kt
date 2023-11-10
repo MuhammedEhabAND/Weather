@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bumptech.glide.load.engine.Resource
+import com.google.android.gms.common.api.Api
 import inc.moe.weather.R
 import inc.moe.weather.model.WeatherResponse
 import inc.moe.weather.network.API
@@ -21,44 +22,52 @@ import kotlinx.coroutines.launch
 class HomeViewModel(private val iRepo: IRepo) : ViewModel() {
     var isPermissionGranted: Boolean = false
     private var _weatherResponse: MutableStateFlow<ApiState> = MutableStateFlow(ApiState.Loading)
-    var unit: String = "metric"
-    var lat: String = ""
-    var lon: String = ""
+
+
+
     val weatherResponse: StateFlow<ApiState>
         get() = _weatherResponse
+    private  var _weatherCachedResponse:MutableStateFlow<ApiState> = MutableStateFlow(ApiState.Loading)
+    val weatherCachedResponse: StateFlow<ApiState>
+        get()=_weatherCachedResponse
 
 
-    fun getCurrentWeather() {
+    fun getCurrentWeather(lat:String ,lon:String , unit :String) {
         viewModelScope.launch(Dispatchers.IO) {
+           resetWeatherResponse()
             if (isPermissionGranted) {
-                resetWeatherResponse()
 
 
                 iRepo.getWeather(lat = lat, lon = lon, units = unit)
                 .catch { e ->
-                    if(iRepo.readCachedWeatherData()==null) {
                         _weatherResponse.value = ApiState.Failure(e.message.toString())
-                    }else{
-                        _weatherResponse.value =ApiState.Success(iRepo.readCachedWeatherData()!!,"cached")
                     }
-                }
                 .collect {
-
                         data ->
                         _weatherResponse.value = ApiState.Success(data)
                         iRepo.cacheWeatherData(weatherData =  data)
+
                     }
             } else {
                 resetWeatherResponse()
-
                 _weatherResponse.value = ApiState.Failure(R.string.no_location_permission.toString())
             }
 
+
         }
-
-
-
     }
+
+    fun getCachedWeatherResponse(){
+        viewModelScope.launch(Dispatchers.IO) {
+            if(iRepo.readCachedWeatherData()!=null) {
+                _weatherCachedResponse.value = ApiState.Success(iRepo.readCachedWeatherData()!!)
+            }else{
+                _weatherCachedResponse.value = ApiState.Failure("there is no internet to fetch the weather data")
+
+            }
+        }
+    }
+
 
     fun resetWeatherResponse() {
         _weatherResponse = MutableStateFlow(ApiState.Loading)

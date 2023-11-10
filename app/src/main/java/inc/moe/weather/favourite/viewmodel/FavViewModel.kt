@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.android.gms.common.api.Api
 import inc.moe.weather.R
+import inc.moe.weather.model.DatabaseWeather
+import inc.moe.weather.model.Weather
 import inc.moe.weather.network.ApiState
 import inc.moe.weather.network.DatabaseState
 import inc.moe.weather.repo.IRepo
@@ -35,6 +37,16 @@ class FavViewModel(private val iRepo: IRepo) : ViewModel() {
                 .collect{
                     data->_weatherData.value = DatabaseState.Success(data)
                 }
+        }
+    }
+     fun deleteFavWeather(weather: DatabaseWeather){
+        viewModelScope.launch(Dispatchers.IO) {
+            iRepo.deleteWeather(weather)
+        }
+    }
+    fun addFavWeather(weather: DatabaseWeather){
+        viewModelScope.launch(Dispatchers.IO) {
+            iRepo.addWeather(weather)
         }
     }
 

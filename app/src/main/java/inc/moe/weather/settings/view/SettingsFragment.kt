@@ -1,14 +1,14 @@
 package inc.moe.weather.settings.view
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
+import inc.moe.weather.Constants
 import inc.moe.weather.R
 import inc.moe.weather.databinding.FragmentSettingsBinding
-import inc.moe.weather.model.Settings
 import inc.moe.weather.model.SettingsData
 
 class SettingsFragment : Fragment() {
@@ -50,15 +50,12 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        settingsAdapter =SettingsAdapter()
+        settingsAdapter =SettingsAdapter(requireContext())
         settingsAdapter.submitList(settingsData)
         viewBindingSettings.settingsRv.adapter = settingsAdapter
 
-//        viewBindingSettings.rvLayout.translationY = viewBindingSettings.rvLayout.height.toFloat()
-//        viewBindingSettings.rvLayout.animate()
-//            .setDuration(300)
-//            .translationY(0f)
-//            .start()
+
+
 
 
     }

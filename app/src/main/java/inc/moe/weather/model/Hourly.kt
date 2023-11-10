@@ -21,5 +21,5 @@ data class Hourly(
     val wind_deg: Long,
     val wind_gust: Double,
     val weather: List<Weather>,
-    val pop: Long,
+    val pop: Double,
 ): Serializable

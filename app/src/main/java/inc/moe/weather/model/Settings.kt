@@ -1,4 +1,4 @@
 package inc.moe.weather.model
 
-data class Settings(val title :String, val logo :Int, val option1 :String, val option2:String, val isExpanded :Boolean = false )
+data class Settings(var title :Int, var logo :Int, var option1 :Int, var option2:Int, var isExpanded :Boolean = false , var isOptionOne:Boolean )
 

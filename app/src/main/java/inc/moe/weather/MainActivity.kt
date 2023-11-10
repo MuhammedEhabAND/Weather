@@ -14,17 +14,18 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
 import inc.moe.weather.databinding.ActivityMainBinding
+import inc.moe.weather.model.SettingsData
 
 const val PERMISSION_ID = 44
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var mFusedLocationClient: FusedLocationProviderClient
+
     private lateinit var homeActivityViewBinding:ActivityMainBinding
     private lateinit var navController :NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        SettingsData.loadSettings(context = applicationContext)
         homeActivityViewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(homeActivityViewBinding.root)
 
@@ -39,11 +40,24 @@ class MainActivity : AppCompatActivity() {
             )
         })
 
+        animateNavBar()
 
 
 
 
     }
+
+    private fun animateNavBar() {
+        homeActivityViewBinding.navigatorBar.postDelayed({
+            homeActivityViewBinding.navigatorBar.translationY = homeActivityViewBinding.navigatorBar.height.toFloat()
+            homeActivityViewBinding.navigatorBar.animate()
+
+                .translationY(0f)
+                .setDuration(500)
+                .start()
+        }, 100)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return super.onOptionsItemSelected(item)
     }

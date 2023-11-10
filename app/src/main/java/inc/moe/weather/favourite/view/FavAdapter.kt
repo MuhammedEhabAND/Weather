@@ -6,17 +6,16 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Database
 import com.bumptech.glide.Glide
 import inc.moe.weather.R
+import inc.moe.weather.SwipeToDeleteListener
 import inc.moe.weather.databinding.FavItemLayoutBinding
 import inc.moe.weather.getImage
 import inc.moe.weather.model.DatabaseWeather
-import inc.moe.weather.model.DummyFav
-import inc.moe.weather.model.Weather
+import inc.moe.weather.utils.getLocationInfo
 
 
-class FavAdapter : ListAdapter<DatabaseWeather, FavAdapter.ViewHolder>(
+class FavAdapter (val context: Context , private val swipeToDeleteListener: SwipeToDeleteListener  ): ListAdapter<DatabaseWeather, FavAdapter.ViewHolder>(
     FavDiffUtil()
 ) {
 
@@ -32,9 +31,13 @@ class FavAdapter : ListAdapter<DatabaseWeather, FavAdapter.ViewHolder>(
         val inflater: LayoutInflater =
             parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         favAdapterViewBinding = FavItemLayoutBinding.inflate(inflater, parent, false)
+
         return ViewHolder(favAdapterViewBinding)
 
     }
+
+
+
 
     override fun onBindViewHolder(holder: FavAdapter.ViewHolder, position: Int) {
         val dummyFav = getItem(position)
@@ -49,9 +52,20 @@ class FavAdapter : ListAdapter<DatabaseWeather, FavAdapter.ViewHolder>(
 
     private fun showData(holder: ViewHolder, dummyFav: DatabaseWeather) {
         holder.binding.let {
-            it.titleTv.text = dummyFav.timeZone
+//            it.titleTv.text = dummyFav.timeZone
+
+            val locationInfo = getLocationInfo(dummyFav.lat.toDouble(), dummyFav.lon.toDouble(), context)
+            if (locationInfo.cityName != "wrong") {
+                val cityName = locationInfo.cityName
+                it.titleTv.text = cityName
+            } else {
+                it.titleTv.text = dummyFav.timeZone
+                // Handle the case when no address is found or there's an error
+            }
+
+
             it.weatherType.text = dummyFav.weatherType
-            it.contentTv.text="${dummyFav.temp.toInt()}℃"
+            it.contentTv.text="${dummyFav.temp}℃"
             Glide.with(it.logoIv)
                 .load(getImage(dummyFav.image, 4))
                 .placeholder(R.drawable.place_holder)
@@ -106,5 +120,6 @@ class FavAdapter : ListAdapter<DatabaseWeather, FavAdapter.ViewHolder>(
         }
 
     }
+
 
 }

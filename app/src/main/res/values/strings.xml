@@ -16,7 +16,25 @@
     <string name="fav_bottom_icon">Favourite</string>
     <string name="settings_icon">Settings</string>
     <string name="allow_btn">Allow</string>
-    <string name="cached_data">Check your network please </string>
+    <string name="location">Location</string>
+    <string name="gps">GPS</string>
+    <string name="maps">Maps</string>
+    <string name="language">Language</string>
+    <string name="english">English</string>
+    <string name="arabic">Arabic</string>
+    <string name="wind_speed_unit">Wind Speed Unit</string>
+    <string name="meter">Meter / Sec</string>
+    <string name="mile">Mile / Hour</string>
+    <string name="notification">Notification</string>
+    <string name="enable">Enable</string>
+    <string name="disable">Disable</string>
+    <string name="temp">Temperature</string>
+    <string name="celsius">Celsius</string>
+    <string name="fahrenheit">Fahrenheit</string>
+
+
+    <string name="snack_bar_no_network">Check your network please </string>
     <string name="no_location_permission">We cannot fetch your location.
     Please allow Weather to access your location</string>
+
 </resources>

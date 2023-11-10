@@ -24,17 +24,21 @@ class MapViewModel(private val iRepo: IRepo) : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO) {
             Log.i("TAG", "getWeatherMethod: ")
-            iRepo.getWeather(lat = lat , lon = lon).catch {
+            iRepo.getWeather(lat = lat , lon = lon , units = "metric").catch {
 
-                e->_weatherResponse.value = ApiState.Failure(e.message.toString())
+                e->
+                Log.i("TAG", "getWeather: ${e.cause?.message.toString()} ")
+                    _weatherResponse.value = ApiState.Failure(e.message.toString())
 
             }
                 .collect{
-                    data->
-                    _weatherResponse.value = ApiState.Success(data)
-                    Log.i("TAG", "weatherResponse: ${data}")
+                    data->Log.i("TAG", "weatherResponse: ${data}")
                     val weather =convertWeatherResponseToDatabaseWeather(data , lon , lat)
-                    Log.i("TAG", "getWeather: ${iRepo.addWeather( weather )}")
+                         iRepo.addWeather(weather)
+                        _weatherResponse.value = ApiState.Success(data)
+
+
+
 
                 }
         }
@@ -45,7 +49,7 @@ class MapViewModel(private val iRepo: IRepo) : ViewModel() {
         val weatherType = data.current.weather.first().main
         val weatherDegree = data.current.temp
         val weatherImage =data.current.weather.first().icon
-        return DatabaseWeather(lon.toDouble() ,lat.toDouble() ,title ,weatherType ,weatherDegree ,weatherImage )
+        return DatabaseWeather(lon ,lat ,title ,weatherType ,weatherDegree ,weatherImage )
 
     }
 

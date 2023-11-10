@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
+import android.net.ConnectivityManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
@@ -26,15 +27,16 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import inc.moe.notesapp.database.WeatherLocalSource
+import inc.moe.weather.Constants
 import inc.moe.weather.PERMISSION_ID
 import inc.moe.weather.R
 import inc.moe.weather.databinding.FragmentHomeBinding
-import inc.moe.weather.db.AppDatabase
 import inc.moe.weather.getDate
 import inc.moe.weather.getDateForHourly
 import inc.moe.weather.getImage
 import inc.moe.weather.home.viewmodel.HomeViewModel
 import inc.moe.weather.home.viewmodel.HomeViewModelFactory
+import inc.moe.weather.model.SettingsData
 import inc.moe.weather.network.ApiState
 import inc.moe.weather.network.WeatherClient
 import inc.moe.weather.repo.Repo
@@ -49,6 +51,11 @@ class HomeFragment : Fragment() {
     private lateinit var homeViewBinding: FragmentHomeBinding
     private lateinit var dailyAdapter: DailyAdapter
     private lateinit var hourlyAdapter: HourlyAdapter
+    private lateinit var fragmentView: View
+    private lateinit var lat: String
+    private lateinit var lon: String
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -59,13 +66,48 @@ class HomeFragment : Fragment() {
     ): View? {
         homeViewBinding = FragmentHomeBinding.inflate(inflater, container, false)
         // Inflate the layout for this fragment
+        // Load the settings initially
+        val settingsList = SettingsData.settingsList
 
+
+        for (setting in settingsList) {
+            when (setting.title) {
+                R.string.location -> {
+                    if (setting.isOptionOne) {
+
+                    } else {
+
+                    }
+                }
+                R.string.language -> {
+                    if (setting.isOptionOne) {
+
+                    } else {
+
+                    }
+                }
+                R.string.wind_speed_unit , R.string.temp ->{
+                    if(setting.isOptionOne){
+                        Constants.CURRENT_SELECTED_UNIT = Constants.UNITS_METER
+                        Constants.CURRENT_WIND_UNIT = Constants.METER_PER_SECONDS
+                        Constants.CURRENT_WEATHER_UNIT = Constants.CELISUIS
+                    }else{
+
+                        Constants.CURRENT_SELECTED_UNIT = Constants.UNITS_IMPERIAL
+                        Constants.CURRENT_WIND_UNIT = Constants.MILE_PER_HOUR
+                        Constants.CURRENT_WEATHER_UNIT = Constants.FAHERNHEIT
+                    }
+                }
+
+            }
+        }
 
         return homeViewBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fragmentView = view
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
         homeViewModel = ViewModelProvider(
@@ -74,54 +116,91 @@ class HomeFragment : Fragment() {
                 Repo.getInstance(
                     WeatherClient(),
                     WeatherLocalSource.getInstance(requireContext())
-                    )
+                )
 
             )
         )
 
+
             .get(HomeViewModel::class.java)
+
         dailyAdapter = DailyAdapter()
         homeViewBinding.daysRv.adapter = dailyAdapter
         hourlyAdapter = HourlyAdapter()
         homeViewBinding.hourRv.adapter = hourlyAdapter
-        homeViewBinding.root.postDelayed({loadData()}, 1000)
+        homeViewBinding.root.postDelayed({ loadData(lat ,lon) }, 1000)
         homeViewBinding.swipeToRefresh.setOnRefreshListener {
-
-            loadData()
+            loadData(lat,lon)
         }
     }
 
-    private fun loadData() {
-        homeViewModel.getCurrentWeather()
+    private fun loadData(lat : String , lon:String) {
 
-        lifecycleScope.launch {
-            homeViewModel.weatherResponse.collectLatest { result ->
-                when (result) {
-                    is ApiState.Success -> {
+        val connectivityManager =
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
-                        homeViewBinding.swipeToRefresh.isRefreshing = false
-                        showData(result)
+        val networkInfo = connectivityManager.activeNetworkInfo
+        if(homeViewModel.isPermissionGranted){
+            if (networkInfo != null && networkInfo.isConnected) {
+                homeViewModel.getCurrentWeather(lat , lon , Constants.CURRENT_SELECTED_UNIT)
+
+                lifecycleScope.launch {
+                    homeViewModel.weatherResponse.collectLatest { result ->
+                        when (result) {
+                            is ApiState.Success -> {
+
+                                homeViewBinding.swipeToRefresh.isRefreshing = false
+                                showData(result)
+
+                            }
+
+                            is ApiState.Failure -> {
+                                homeViewBinding.swipeToRefresh.isRefreshing = false
+                                showError(result)
+
+
+                            }
+
+                            is ApiState.Loading -> {
+                                homeViewBinding.swipeToRefresh.isRefreshing = true
+                                showLoading()
+                            }
+
+                        }
                     }
-
-                    is ApiState.Failure -> {
-                        homeViewBinding.swipeToRefresh.isRefreshing = false
-                        showError(result)
-
-
-                    }
-
-                    is ApiState.Loading -> {
-
-                        homeViewBinding.swipeToRefresh.isRefreshing = true
-                        showLoading()
-                    }
-
                 }
+
+
+            } else {
+                homeViewModel.getCachedWeatherResponse()
+                lifecycleScope.launch {
+                    homeViewModel.weatherCachedResponse.collectLatest {result->
+                        when(result){
+                            is ApiState.Loading->{
+                                showLoading()
+                            }
+                            is ApiState.Failure->{
+                                homeViewBinding.swipeToRefresh.isRefreshing = false
+
+                                showError(result)
+                            }
+                            is ApiState.Success->{
+                                homeViewBinding.swipeToRefresh.isRefreshing = false
+
+                                showData(result , true)
+                            }
+                        }
+                    }
+                }
+
+
             }
+
         }
     }
 
     private fun showLoading() {
+
         homeViewBinding.swipeToRefresh.isRefreshing = true
         homeViewBinding.errorCardView.visibility = View.GONE
         homeViewBinding.scrollView.visibility = View.GONE
@@ -136,24 +215,23 @@ class HomeFragment : Fragment() {
         homeViewBinding.timeRegion.text = "Something Wrong Happens"
         homeViewBinding.scrollView.visibility = View.GONE
 
-        if(homeViewModel.isPermissionGranted) {
+        if (homeViewModel.isPermissionGranted) {
 
             homeViewBinding.errorMessage.text = result.message
 
             homeViewBinding.retryBtn.setOnClickListener {
 
-                loadData()
+                loadData(lat , lon)
 
 
             }
-        }else{
+        } else {
             homeViewBinding.errorMessage.text = getString(result.message.toInt())
             homeViewBinding.retryBtn.text = getString(R.string.allow_btn)
-
             homeViewBinding.retryBtn.setOnClickListener {
                 val intent = Intent()
                 intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                intent.data = Uri.fromParts("package", context!!.packageName, null)
+                intent.data = Uri.fromParts("package", requireContext().packageName, null)
                 startActivity(intent)
             }
         }
@@ -179,26 +257,28 @@ class HomeFragment : Fragment() {
         }, 100)
     }
 
-    private fun showData(result: ApiState.Success) {
+    private fun showData(result: ApiState.Success, isCached: Boolean = false) {
 
         animateSuccessViews()
-        if(result.isCached == "cached"){
-            Snackbar.make(requireView() , getString(R.string.cached_data) ,Snackbar.LENGTH_SHORT).show()
+        if (isCached) {
+            Snackbar.make(
+                requireView(),
+                requireContext().getString(R.string.snack_bar_no_network),
+                Snackbar.LENGTH_SHORT
+            ).show()
         }
         homeViewBinding.mapIcon.setImageResource(R.drawable.baseline_my_location_24)
-
         homeViewBinding.errorCardView.visibility = View.GONE
         homeViewBinding.scrollView.visibility = View.VISIBLE
-
         homeViewBinding.weatherDegree.text =
-            "${result.weatherResponse.current.temp.toInt().toString()}\u2103"
+            "${result.weatherResponse.current.temp.toInt()}${Constants.CURRENT_WEATHER_UNIT}"
         homeViewBinding.timeRegion.text = result.weatherResponse.timezone
         homeViewBinding.weatherType.text = result.weatherResponse.current.weather.first().main
         homeViewBinding.date.text = getDate(result.weatherResponse.current.dt)
         homeViewBinding.day.text = getDateForHourly(result.weatherResponse.current.dt)
         homeViewBinding.humidityText.text = "${result.weatherResponse.current.humidity} %"
         homeViewBinding.pressureText.text = "${result.weatherResponse.current.pressure} hpa"
-        homeViewBinding.windText.text = "${result.weatherResponse.current.wind_speed} m/s"
+        homeViewBinding.windText.text = "${result.weatherResponse.current.wind_speed} ${Constants.CURRENT_WIND_UNIT}"
         homeViewBinding.cloudText.text = "${result.weatherResponse.current.clouds} %"
         homeViewBinding.uviText.text = "${result.weatherResponse.current.uvi} "
         homeViewBinding.visibilityText.text = "${result.weatherResponse.current.visibility} m"
@@ -222,7 +302,8 @@ class HomeFragment : Fragment() {
         }, 100)
 
         homeViewBinding.weatherType.postDelayed({
-            homeViewBinding.weatherType.translationX = homeViewBinding.weatherType.width.toFloat()
+            homeViewBinding.weatherType.translationX =
+                homeViewBinding.weatherType.width.toFloat()
             homeViewBinding.weatherType.animate()
                 .translationX(0f)
                 .setDuration(500)
@@ -238,14 +319,16 @@ class HomeFragment : Fragment() {
                 .start()
         }, 100)
         homeViewBinding.moreDetails.postDelayed({
-            homeViewBinding.moreDetails.translationX = homeViewBinding.moreDetails.width.toFloat()
+            homeViewBinding.moreDetails.translationX =
+                homeViewBinding.moreDetails.width.toFloat()
             homeViewBinding.moreDetails.animate()
                 .translationX(0f)
                 .setDuration(500)
                 .start()
         }, 100)
         homeViewBinding.hourlyTitle.postDelayed({
-            homeViewBinding.hourlyTitle.translationX = homeViewBinding.hourlyTitle.width.toFloat()
+            homeViewBinding.hourlyTitle.translationX =
+                homeViewBinding.hourlyTitle.width.toFloat()
             homeViewBinding.hourlyTitle.animate()
                 .translationX(0f)
                 .setDuration(500)
@@ -296,12 +379,11 @@ class HomeFragment : Fragment() {
     private val mLocationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             val mLastLocation: Location = locationResult.lastLocation!!
-            var lon = mLastLocation.longitude.toString()
-            var lat = mLastLocation.latitude.toString()
+             lon = mLastLocation.longitude.toString()
+             lat = mLastLocation.latitude.toString()
 //            getStreetName(mLastLocation.latitude, mLastLocation.longitude)
-            homeViewModel.lat = lat
-            homeViewModel.lon = lon
-            loadData()
+
+            loadData(lat , lon)
 
         }
 
@@ -372,11 +454,11 @@ class HomeFragment : Fragment() {
     private fun getLocation() {
         if (checkPermissions()) {
             if (isLocationEnabled()) {
-                homeViewModel.isPermissionGranted=true
+                homeViewModel.isPermissionGranted = true
                 requestNewLocationData()
 
             } else {
-                homeViewModel.isPermissionGranted=false
+                homeViewModel.isPermissionGranted = false
                 Toast.makeText(requireContext(), "Turn On Location", Toast.LENGTH_SHORT).show()
                 val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
                 startActivity(intent)
@@ -392,7 +474,8 @@ class HomeFragment : Fragment() {
         val mLocationRequest = com.google.android.gms.location.LocationRequest()
         mLocationRequest.setPriority(com.google.android.gms.location.LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
         mLocationRequest.setInterval(60000)
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        mFusedLocationClient =
+            LocationServices.getFusedLocationProviderClient(requireActivity())
         mFusedLocationClient.requestLocationUpdates(
             mLocationRequest, mLocationCallback,
             Looper.myLooper()

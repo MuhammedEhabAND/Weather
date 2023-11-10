@@ -6,55 +6,68 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.RadioGroup
+import android.widget.Toast
+import androidx.core.view.get
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import com.google.android.material.snackbar.Snackbar
+import inc.moe.weather.Constants
 import inc.moe.weather.R
-import inc.moe.weather.databinding.DailyItemLayoutBinding
 import inc.moe.weather.databinding.ExpandableItemLayoutBinding
-import inc.moe.weather.getDateForDaily
-import inc.moe.weather.getImage
-import inc.moe.weather.model.Daily
 import inc.moe.weather.model.Settings
+import inc.moe.weather.model.SettingsData
 import inc.moe.weather.model.Weather
 
-class SettingsAdapter : ListAdapter<Settings, SettingsAdapter.ViewHolder>(
+class SettingsAdapter(val context: Context) : ListAdapter<Settings, SettingsAdapter.ViewHolder>(
     SettingsDiffUtil()
 ) {
-    var list : MutableList<Weather>? = null
+
+
     private lateinit var settingsAdapterViewBinding: ExpandableItemLayoutBinding
-    class ViewHolder(var binding :ExpandableItemLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(var binding :ExpandableItemLayoutBinding) : RecyclerView.ViewHolder(binding.root)
 
-    }
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SettingsAdapter.ViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater :LayoutInflater =
             parent.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         settingsAdapterViewBinding = ExpandableItemLayoutBinding.inflate(inflater , parent , false)
         return ViewHolder(settingsAdapterViewBinding)
 
     }
-    override fun onBindViewHolder(holder: SettingsAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val currentSettings = getItem(position)
         var isExpanded = currentSettings.isExpanded
         showAndHideData(holder , isExpanded)
 
         holder.binding.let {
-            it.titleTv.text = currentSettings.title
-            it.option1Text.text = currentSettings.option1
-            it.option2Text.text = currentSettings.option2
+            it.titleTv.text = context.getString(currentSettings.title)
+            it.option1Text.text = context.getString(currentSettings.option1)
+            it.option2Text.text = context.getString(currentSettings.option2)
+            if(currentSettings.isOptionOne){
+                it.option1.isChecked = true
+            }else{
+                it.option2.isChecked = true
+
+            }
+            it.radioGroupItems.setOnCheckedChangeListener{group , checkedId ->
+                currentSettings.isOptionOne = checkedId == R.id.option1
+                SettingsData.saveSettings(context)
+            }
             it.logoIv.setImageResource(currentSettings.logo)
             it.card.setOnClickListener{
                 isExpanded = !isExpanded
                 showAndHideData(holder , isExpanded)
 
             }
+
         }
     }
 
-    private fun showAndHideData(holder: SettingsAdapter.ViewHolder , isExpanded:Boolean) {
+
+
+    private fun showAndHideData(holder: ViewHolder , isExpanded:Boolean) {
         if(isExpanded){
             expand(holder)
         }else{
@@ -62,7 +75,7 @@ class SettingsAdapter : ListAdapter<Settings, SettingsAdapter.ViewHolder>(
         }
     }
 
-    private fun expand(holder: SettingsAdapter.ViewHolder){
+    private fun expand(holder: ViewHolder){
         holder.binding.let {
             it.radioGroupItems.visibility = View.VISIBLE
             it.expandableView.visibility=View.VISIBLE
@@ -73,7 +86,7 @@ class SettingsAdapter : ListAdapter<Settings, SettingsAdapter.ViewHolder>(
             it.expandImage.setImageResource(R.drawable.baseline_keyboard_arrow_up_24)
         }
     }
-    private fun hide(holder: SettingsAdapter.ViewHolder){
+    private fun hide(holder: ViewHolder){
         holder.binding.let {
             it.radioGroupItems.visibility = View.GONE
             it.expandableView.visibility=View.GONE
