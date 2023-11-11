@@ -13,6 +13,7 @@ import inc.moe.weather.favourite.viewmodel.SwipeToDeleteListener
 import inc.moe.weather.databinding.FavItemLayoutBinding
 import inc.moe.weather.utils.getImage
 import inc.moe.weather.model.DatabaseWeather
+import inc.moe.weather.utils.Constants
 import inc.moe.weather.utils.getLocationInfo
 
 
@@ -69,7 +70,7 @@ class FavAdapter (val context: Context, private val swipeToDeleteListener: Swipe
 
 
             it.weatherType.text = dummyFav.weatherType
-            it.contentTv.text="${dummyFav.temp}℃"
+            it.contentTv.text="${dummyFav.temp}${Constants.CURRENT_WEATHER_UNIT}"
             Glide.with(it.logoIv)
                 .load(getImage(dummyFav.image, 4))
                 .placeholder(R.drawable.place_holder)

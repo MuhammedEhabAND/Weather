@@ -1,5 +1,7 @@
 package inc.moe.weather
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -19,11 +21,14 @@ const val PERMISSION_ID = 44
 
 class MainActivity : AppCompatActivity() {
 
+
     private lateinit var homeActivityViewBinding:ActivityMainBinding
     private lateinit var navController :NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         SettingsData.loadSettings(context = applicationContext)
         homeActivityViewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(homeActivityViewBinding.root)

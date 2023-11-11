@@ -3,6 +3,7 @@ package inc.moe.weather.home.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
@@ -49,6 +50,7 @@ import java.io.IOException
 import java.util.Locale
 
 class HomeFragment : Fragment() {
+
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var homeViewBinding: FragmentHomeBinding
@@ -63,6 +65,10 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
+
+
         arguments?.let {
             receivedLat = it.getString("lat").toString()
             receivedLon = it.getString("lon").toString()
@@ -70,6 +76,7 @@ class HomeFragment : Fragment() {
         Log.i("TAG", "onViewCreated: $receivedLat ,$receivedLon")
 
     }
+
 
 
     override fun onCreateView(
@@ -168,9 +175,6 @@ class HomeFragment : Fragment() {
         hourlyAdapter = HourlyAdapter()
         homeViewBinding.hourRv.adapter = hourlyAdapter
 
-        homeViewBinding.root.postDelayed({
-            loadData()
-        }, 500)
         homeViewBinding.swipeToRefresh.setOnRefreshListener {
             loadData()
         }
@@ -479,6 +483,9 @@ class HomeFragment : Fragment() {
 
         getLocation()
 
+        homeViewBinding.root.postDelayed({
+            loadData()
+        }, 500)
 
     }
 
