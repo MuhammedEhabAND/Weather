@@ -6,19 +6,13 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.RadioGroup
-import android.widget.Toast
-import androidx.core.view.get
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
-import inc.moe.weather.Constants
 import inc.moe.weather.R
 import inc.moe.weather.databinding.ExpandableItemLayoutBinding
 import inc.moe.weather.model.Settings
-import inc.moe.weather.model.SettingsData
-import inc.moe.weather.model.Weather
+import inc.moe.weather.utils.SettingsData
 
 class SettingsAdapter(val context: Context) : ListAdapter<Settings, SettingsAdapter.ViewHolder>(
     SettingsDiffUtil()

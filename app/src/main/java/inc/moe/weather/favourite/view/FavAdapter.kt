@@ -7,15 +7,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import inc.moe.weather.favourite.viewmodel.OnItemClickListener
 import inc.moe.weather.R
-import inc.moe.weather.SwipeToDeleteListener
+import inc.moe.weather.favourite.viewmodel.SwipeToDeleteListener
 import inc.moe.weather.databinding.FavItemLayoutBinding
-import inc.moe.weather.getImage
+import inc.moe.weather.utils.getImage
 import inc.moe.weather.model.DatabaseWeather
 import inc.moe.weather.utils.getLocationInfo
 
 
-class FavAdapter (val context: Context , private val swipeToDeleteListener: SwipeToDeleteListener  ): ListAdapter<DatabaseWeather, FavAdapter.ViewHolder>(
+class FavAdapter (val context: Context, private val swipeToDeleteListener: SwipeToDeleteListener, val onItemClickListener: OnItemClickListener): ListAdapter<DatabaseWeather, FavAdapter.ViewHolder>(
     FavDiffUtil()
 ) {
 
@@ -46,6 +47,9 @@ class FavAdapter (val context: Context , private val swipeToDeleteListener: Swip
         if (!animatedPositions.contains(position)) {
             startAnimation(holder, position)
             animatedPositions.add(position)
+        }
+        holder.binding.card.setOnClickListener{
+            onItemClickListener.onItemClickListener(dummyFav)
         }
 
     }

@@ -1,6 +1,5 @@
 package inc.moe.weather
 
-import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -10,11 +9,10 @@ import androidx.navigation.NavController.OnDestinationChangedListener
 import androidx.navigation.NavDestination
 import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.NavigationUI.setupWithNavController
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.material.navigation.NavigationBarView
-import com.google.android.material.navigation.NavigationView
 import inc.moe.weather.databinding.ActivityMainBinding
-import inc.moe.weather.model.SettingsData
+import inc.moe.weather.utils.SettingsData
+import inc.moe.weather.utils.Constants
 
 const val PERMISSION_ID = 44
 

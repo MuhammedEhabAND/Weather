@@ -1,4 +1,4 @@
-package inc.moe.weather
+package inc.moe.weather.favourite.viewmodel
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView

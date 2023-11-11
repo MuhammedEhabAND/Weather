@@ -1,7 +1,8 @@
-package inc.moe.weather.model
+package inc.moe.weather.utils
 
 import android.content.Context
 import inc.moe.weather.R
+import inc.moe.weather.model.Settings
 
 object SettingsData {
 

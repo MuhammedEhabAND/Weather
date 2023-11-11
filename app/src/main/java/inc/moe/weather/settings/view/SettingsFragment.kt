@@ -4,12 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import inc.moe.weather.Constants
-import inc.moe.weather.R
 import inc.moe.weather.databinding.FragmentSettingsBinding
-import inc.moe.weather.model.SettingsData
+import inc.moe.weather.utils.SettingsData
 
 class SettingsFragment : Fragment() {
     private lateinit var viewBindingSettings: FragmentSettingsBinding

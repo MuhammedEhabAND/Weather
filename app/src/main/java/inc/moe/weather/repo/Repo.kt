@@ -2,15 +2,13 @@ package inc.moe.weather.repo
 
 import android.util.Log
 import inc.moe.notesapp.database.IWeatherLocalSource
-import inc.moe.notesapp.database.WeatherLocalSource
-import inc.moe.weather.Constants
+import inc.moe.weather.utils.Constants
 import inc.moe.weather.model.DatabaseWeather
 import inc.moe.weather.model.WeatherResponse
 import inc.moe.weather.network.RemoteSource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileInputStream

@@ -1,4 +1,4 @@
-package inc.moe.weather
+package inc.moe.weather.favourite.viewmodel
 
 import inc.moe.weather.model.DatabaseWeather
 

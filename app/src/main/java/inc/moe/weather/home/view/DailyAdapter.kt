@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import inc.moe.weather.R
 import inc.moe.weather.databinding.DailyItemLayoutBinding
-import inc.moe.weather.getDateForDaily
-import inc.moe.weather.getImage
+import inc.moe.weather.utils.getDateForDaily
+import inc.moe.weather.utils.getImage
 import inc.moe.weather.model.Daily
 import inc.moe.weather.model.Weather
 

@@ -63,6 +63,7 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:2.6.0"
     // Kotlin annotation processing tool (kapt)
     kapt "androidx.room:room-compiler:2.6.0"
+    implementation "com.airbnb.android:lottie:3.4.0"
 
 
     implementation("androidx.navigation:navigation-fragment-ktx:2.7.4")

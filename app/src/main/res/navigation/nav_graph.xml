@@ -9,12 +9,29 @@
         android:id="@+id/homeFragment"
         android:name="inc.moe.weather.home.view.HomeFragment"
         android:label="@string/home_bottom_icon"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <argument
+            android:name="lat"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="default" />
+        <argument
+            android:name="lon"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="default" />
+    </fragment>
     <fragment
         android:id="@+id/favFragment"
         android:name="inc.moe.weather.favourite.view.FavFragment"
         android:label="@string/fav_bottom_icon"
-        tools:layout="@layout/fragment_fav" />
+        tools:layout="@layout/fragment_fav" >
+        <action
+            android:id="@+id/action_favFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/favFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="inc.moe.weather.settings.view.SettingsFragment"

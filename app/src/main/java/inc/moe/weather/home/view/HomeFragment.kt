@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,16 +28,16 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import inc.moe.notesapp.database.WeatherLocalSource
-import inc.moe.weather.Constants
+import inc.moe.weather.utils.Constants
 import inc.moe.weather.PERMISSION_ID
 import inc.moe.weather.R
 import inc.moe.weather.databinding.FragmentHomeBinding
-import inc.moe.weather.getDate
-import inc.moe.weather.getDateForHourly
-import inc.moe.weather.getImage
+import inc.moe.weather.utils.getDate
+import inc.moe.weather.utils.getDateForHourly
+import inc.moe.weather.utils.getImage
 import inc.moe.weather.home.viewmodel.HomeViewModel
 import inc.moe.weather.home.viewmodel.HomeViewModelFactory
-import inc.moe.weather.model.SettingsData
+import inc.moe.weather.utils.SettingsData
 import inc.moe.weather.network.ApiState
 import inc.moe.weather.network.WeatherClient
 import inc.moe.weather.repo.Repo
@@ -52,13 +53,16 @@ class HomeFragment : Fragment() {
     private lateinit var dailyAdapter: DailyAdapter
     private lateinit var hourlyAdapter: HourlyAdapter
     private lateinit var fragmentView: View
+    private lateinit var receivedLat: String
+    private lateinit var receivedLon: String
     private lateinit var lat: String
     private lateinit var lon: String
-
+    private var isLocationGot: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -67,6 +71,7 @@ class HomeFragment : Fragment() {
         homeViewBinding = FragmentHomeBinding.inflate(inflater, container, false)
         // Inflate the layout for this fragment
         // Load the settings initially
+
         val settingsList = SettingsData.settingsList
 
 
@@ -79,6 +84,7 @@ class HomeFragment : Fragment() {
 
                     }
                 }
+
                 R.string.language -> {
                     if (setting.isOptionOne) {
 
@@ -86,12 +92,13 @@ class HomeFragment : Fragment() {
 
                     }
                 }
-                R.string.wind_speed_unit , R.string.temp ->{
-                    if(setting.isOptionOne){
+
+                R.string.wind_speed_unit, R.string.temp -> {
+                    if (setting.isOptionOne) {
                         Constants.CURRENT_SELECTED_UNIT = Constants.UNITS_METER
                         Constants.CURRENT_WIND_UNIT = Constants.METER_PER_SECONDS
                         Constants.CURRENT_WEATHER_UNIT = Constants.CELISUIS
-                    }else{
+                    } else {
 
                         Constants.CURRENT_SELECTED_UNIT = Constants.UNITS_IMPERIAL
                         Constants.CURRENT_WIND_UNIT = Constants.MILE_PER_HOUR
@@ -107,6 +114,9 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        receivedLat = arguments?.getString("lat").toString()
+        receivedLon = arguments?.getString("lon").toString()
+
         fragmentView = view
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
@@ -128,74 +138,81 @@ class HomeFragment : Fragment() {
         homeViewBinding.daysRv.adapter = dailyAdapter
         hourlyAdapter = HourlyAdapter()
         homeViewBinding.hourRv.adapter = hourlyAdapter
-        homeViewBinding.root.postDelayed({ loadData(lat ,lon) }, 1000)
+
+        homeViewBinding.root.postDelayed({
+            loadData()
+        }, 500)
         homeViewBinding.swipeToRefresh.setOnRefreshListener {
-            loadData(lat,lon)
+            loadData()
         }
     }
 
-    private fun loadData(lat : String , lon:String) {
+    private fun loadData() {
 
         val connectivityManager =
             requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 
         val networkInfo = connectivityManager.activeNetworkInfo
-        if(homeViewModel.isPermissionGranted){
+        if (homeViewModel.isPermissionGranted) {
             if (networkInfo != null && networkInfo.isConnected) {
-                homeViewModel.getCurrentWeather(lat , lon , Constants.CURRENT_SELECTED_UNIT)
+                if (isLocationGot) {
+                    homeViewModel.getCurrentWeather(lat, lon, Constants.CURRENT_SELECTED_UNIT)
 
-                lifecycleScope.launch {
-                    homeViewModel.weatherResponse.collectLatest { result ->
-                        when (result) {
-                            is ApiState.Success -> {
+                    lifecycleScope.launch {
+                        homeViewModel.weatherResponse.collectLatest { result ->
+                            when (result) {
+                                is ApiState.Success -> {
 
-                                homeViewBinding.swipeToRefresh.isRefreshing = false
-                                showData(result)
+                                    homeViewBinding.swipeToRefresh.isRefreshing = false
+                                    showData(result)
 
-                            }
+                                }
 
-                            is ApiState.Failure -> {
-                                homeViewBinding.swipeToRefresh.isRefreshing = false
-                                showError(result)
-
-
-                            }
-
-                            is ApiState.Loading -> {
-                                homeViewBinding.swipeToRefresh.isRefreshing = true
-                                showLoading()
-                            }
-
-                        }
-                    }
-                }
+                                is ApiState.Failure -> {
+                                    homeViewBinding.swipeToRefresh.isRefreshing = false
+                                    showError(result)
 
 
-            } else {
-                homeViewModel.getCachedWeatherResponse()
-                lifecycleScope.launch {
-                    homeViewModel.weatherCachedResponse.collectLatest {result->
-                        when(result){
-                            is ApiState.Loading->{
-                                showLoading()
-                            }
-                            is ApiState.Failure->{
-                                homeViewBinding.swipeToRefresh.isRefreshing = false
+                                }
 
-                                showError(result)
-                            }
-                            is ApiState.Success->{
-                                homeViewBinding.swipeToRefresh.isRefreshing = false
+                                is ApiState.Loading -> {
+                                    homeViewBinding.swipeToRefresh.isRefreshing = true
+                                    showLoading()
+                                }
 
-                                showData(result , true)
                             }
                         }
                     }
-                }
 
+
+                } else {
+                    homeViewModel.getCachedWeatherResponse()
+                    lifecycleScope.launch {
+                        homeViewModel.weatherCachedResponse.collectLatest { result ->
+                            when (result) {
+                                is ApiState.Loading -> {
+                                    showLoading()
+                                }
+
+                                is ApiState.Failure -> {
+                                    homeViewBinding.swipeToRefresh.isRefreshing = false
+
+                                    showError(result)
+                                }
+
+                                is ApiState.Success -> {
+                                    homeViewBinding.swipeToRefresh.isRefreshing = false
+
+                                    showData(result, true)
+                                }
+                            }
+                        }
+                    }
+
+
+                }
 
             }
-
         }
     }
 
@@ -210,31 +227,34 @@ class HomeFragment : Fragment() {
 
     private fun showError(result: ApiState.Failure) {
         animateFailureView()
-        homeViewBinding.errorCardView.visibility = View.VISIBLE
-        homeViewBinding.mapIcon.setImageResource(R.drawable.baseline_error_24)
-        homeViewBinding.timeRegion.text = "Something Wrong Happens"
-        homeViewBinding.scrollView.visibility = View.GONE
+        homeViewBinding.root.postDelayed({
+            homeViewBinding.errorCardView.visibility = View.VISIBLE
+            homeViewBinding.mapIcon.setImageResource(R.drawable.baseline_error_24)
+            homeViewBinding.timeRegion.text = "Something Wrong Happens"
+            homeViewBinding.scrollView.visibility = View.GONE
 
-        if (homeViewModel.isPermissionGranted) {
+            if (homeViewModel.isPermissionGranted) {
 
-            homeViewBinding.errorMessage.text = result.message
+                homeViewBinding.errorMessage.text = result.message
 
-            homeViewBinding.retryBtn.setOnClickListener {
+                homeViewBinding.retryBtn.setOnClickListener {
 
-                loadData(lat , lon)
+                    loadData()
 
 
+                }
+            } else {
+                homeViewBinding.errorMessage.text = getString(result.message.toInt())
+                homeViewBinding.retryBtn.text = getString(R.string.allow_btn)
+                homeViewBinding.retryBtn.setOnClickListener {
+                    val intent = Intent()
+                    intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                    intent.data = Uri.fromParts("package", requireContext().packageName, null)
+                    startActivity(intent)
+                }
             }
-        } else {
-            homeViewBinding.errorMessage.text = getString(result.message.toInt())
-            homeViewBinding.retryBtn.text = getString(R.string.allow_btn)
-            homeViewBinding.retryBtn.setOnClickListener {
-                val intent = Intent()
-                intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-                intent.data = Uri.fromParts("package", requireContext().packageName, null)
-                startActivity(intent)
-            }
-        }
+
+        }, 500)
     }
 
     private fun animateFailureView() {
@@ -267,30 +287,36 @@ class HomeFragment : Fragment() {
                 Snackbar.LENGTH_SHORT
             ).show()
         }
-        homeViewBinding.mapIcon.setImageResource(R.drawable.baseline_my_location_24)
-        homeViewBinding.errorCardView.visibility = View.GONE
-        homeViewBinding.scrollView.visibility = View.VISIBLE
-        homeViewBinding.weatherDegree.text =
-            "${result.weatherResponse.current.temp.toInt()}${Constants.CURRENT_WEATHER_UNIT}"
-        homeViewBinding.timeRegion.text = result.weatherResponse.timezone
-        homeViewBinding.weatherType.text = result.weatherResponse.current.weather.first().main
-        homeViewBinding.date.text = getDate(result.weatherResponse.current.dt)
-        homeViewBinding.day.text = getDateForHourly(result.weatherResponse.current.dt)
-        homeViewBinding.humidityText.text = "${result.weatherResponse.current.humidity} %"
-        homeViewBinding.pressureText.text = "${result.weatherResponse.current.pressure} hpa"
-        homeViewBinding.windText.text = "${result.weatherResponse.current.wind_speed} ${Constants.CURRENT_WIND_UNIT}"
-        homeViewBinding.cloudText.text = "${result.weatherResponse.current.clouds} %"
-        homeViewBinding.uviText.text = "${result.weatherResponse.current.uvi} "
-        homeViewBinding.visibilityText.text = "${result.weatherResponse.current.visibility} m"
-        Glide.with(requireContext())
-            .load(getImage(result.weatherResponse.current.weather.first().icon, 4))
-            .placeholder(R.drawable.place_holder)
-            .error(R.drawable.error_weather)
-            .into(homeViewBinding.weatherImage)
-        dailyAdapter.submitList(result.weatherResponse.daily)
-        hourlyAdapter.submitList(result.weatherResponse.hourly)
+
+        homeViewBinding.root.postDelayed({
+            homeViewBinding.mapIcon.setImageResource(R.drawable.baseline_my_location_24)
+            homeViewBinding.errorCardView.visibility = View.GONE
+            homeViewBinding.scrollView.visibility = View.VISIBLE
+            homeViewBinding.weatherDegree.text =
+                "${result.weatherResponse.current.temp.toInt()}${Constants.CURRENT_WEATHER_UNIT}"
+            homeViewBinding.timeRegion.text = result.weatherResponse.timezone
+            homeViewBinding.weatherType.text = result.weatherResponse.current.weather.first().main
+            homeViewBinding.date.text = getDate(result.weatherResponse.current.dt)
+            homeViewBinding.day.text = getDateForHourly(result.weatherResponse.current.dt)
+            homeViewBinding.humidityText.text = "${result.weatherResponse.current.humidity} %"
+            homeViewBinding.pressureText.text = "${result.weatherResponse.current.pressure} hpa"
+            homeViewBinding.windText.text =
+                "${result.weatherResponse.current.wind_speed} ${Constants.CURRENT_WIND_UNIT}"
+            homeViewBinding.cloudText.text = "${result.weatherResponse.current.clouds} %"
+            homeViewBinding.uviText.text = "${result.weatherResponse.current.uvi} "
+            homeViewBinding.visibilityText.text = "${result.weatherResponse.current.visibility} m"
+            Glide.with(requireContext())
+                .load(getImage(result.weatherResponse.current.weather.first().icon, 4))
+                .placeholder(R.drawable.place_holder)
+                .error(R.drawable.error_weather)
+                .into(homeViewBinding.weatherImage)
+            dailyAdapter.submitList(result.weatherResponse.daily)
+            hourlyAdapter.submitList(result.weatherResponse.hourly)
+        }, 450)
 
     }
+
+
 
     private fun animateSuccessViews() {
         homeViewBinding.cardView.postDelayed({
@@ -379,11 +405,21 @@ class HomeFragment : Fragment() {
     private val mLocationCallback: LocationCallback = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult) {
             val mLastLocation: Location = locationResult.lastLocation!!
-             lon = mLastLocation.longitude.toString()
-             lat = mLastLocation.latitude.toString()
+            var ActualLon = mLastLocation.longitude.toString()
+            var ActualLat = mLastLocation.latitude.toString()
 //            getStreetName(mLastLocation.latitude, mLastLocation.longitude)
+            Log.i("TAG", "onLocationResult: not in if ")
+            if (receivedLon.equals("default") && receivedLat.equals("default")) {
+                lat = mLastLocation.longitude.toString()
+                lon = mLastLocation.latitude.toString()
 
-            loadData(lat , lon)
+                Log.i("TAG", "onLocationResult: lat:$lat lon:$lon")
+
+            } else {
+                lon = receivedLon!!
+                lat = receivedLat!!
+            }
+            isLocationGot = true
 
         }
 
@@ -408,7 +444,11 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+
+
+
         getLocation()
+
 
     }
 

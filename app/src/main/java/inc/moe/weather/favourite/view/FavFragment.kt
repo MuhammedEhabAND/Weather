@@ -12,12 +12,13 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import inc.moe.notesapp.database.WeatherLocalSource
+import inc.moe.weather.favourite.viewmodel.OnItemClickListener
 import inc.moe.weather.R
-import inc.moe.weather.SwipeToDeleteCallback
-import inc.moe.weather.SwipeToDeleteListener
+import inc.moe.weather.favourite.viewmodel.SwipeToDeleteListener
 import inc.moe.weather.databinding.FragmentFavBinding
 import inc.moe.weather.favourite.viewmodel.FavViewModel
 import inc.moe.weather.favourite.viewmodel.FavViewModelFactory
+import inc.moe.weather.home.view.HomeFragment
 import inc.moe.weather.model.DatabaseWeather
 import inc.moe.weather.network.DatabaseState
 import inc.moe.weather.network.WeatherClient
@@ -25,7 +26,7 @@ import inc.moe.weather.repo.Repo
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class FavFragment : Fragment(), SwipeToDeleteListener {
+class FavFragment : Fragment(), SwipeToDeleteListener, OnItemClickListener {
 
     private lateinit var favBinding: FragmentFavBinding
     private lateinit var favViewModel: FavViewModel
@@ -47,7 +48,9 @@ class FavFragment : Fragment(), SwipeToDeleteListener {
         super.onViewCreated(view, savedInstanceState)
         animate()
         setupRecycler()
-
+        favBinding.swipeToRefresh.setOnRefreshListener {
+            favBinding.swipeToRefresh.isRefreshing = false
+        }
 
         favViewModel = ViewModelProvider(
             requireActivity(),
@@ -88,6 +91,7 @@ class FavFragment : Fragment(), SwipeToDeleteListener {
                         showData(result)
                     }
 
+                    else -> {}
                 }
             }
         }
@@ -97,19 +101,47 @@ class FavFragment : Fragment(), SwipeToDeleteListener {
     }
 
     private fun setupRecycler() {
-        favAdapter = FavAdapter(requireContext() ,  this)
-        favBinding.favRv.adapter =favAdapter
+        favAdapter = FavAdapter(requireContext(), this, this)
+        favBinding.favRv.adapter = favAdapter
         setupSwipeToDelete()
     }
 
     private fun showData(result: DatabaseState.Success) {
-        favBinding.favRv.visibility = View.VISIBLE
-        favAdapter.submitList(result.weatherResponse)
+        favBinding.root.postDelayed({
+            favBinding.favRv.visibility = View.VISIBLE
+        }, 100)
 
+
+        favAdapter.submitList(result.weatherResponse)
+        if (result.weatherResponse.isEmpty()) {
+
+
+            favBinding.lottieAnim.postDelayed({
+                favBinding.lottieAnim.animate()
+                favBinding.lottieAnim.visibility = View.VISIBLE
+            }, 90)
+            favBinding.lottieAnim.postDelayed({
+
+
+                favBinding.lottieAnim.translationY = favBinding.lottieAnim.height.toFloat()
+                favBinding.lottieAnim.animate()
+
+                    .translationY(0f)
+                    .setDuration(500)
+                    .start()
+
+            }, 100)
+        } else {
+            favBinding.lottieAnim.visibility = View.GONE
+            favBinding.lottieAnim.isActivated = false
+
+        }
     }
 
     private fun showError(result: DatabaseState.Failure) {
-        favBinding.favRv.visibility = View.GONE
+        favBinding.root.postDelayed({
+            favBinding.favRv.visibility = View.GONE
+        }, 500)
 
         Snackbar.make(requireView(), result.message, Snackbar.LENGTH_SHORT).show()
     }
@@ -124,7 +156,7 @@ class FavFragment : Fragment(), SwipeToDeleteListener {
         }, 100)
         favBinding.addBtn.postDelayed({
             favBinding.addBtn.translationX = favBinding.addBtn.width.toFloat()
-            favBinding.addBtn.translationY= favBinding.addBtn.height.toFloat()
+            favBinding.addBtn.translationY = favBinding.addBtn.height.toFloat()
             favBinding.addBtn.animate()
                 .translationX(0f)
                 .translationY(0f)
@@ -136,11 +168,12 @@ class FavFragment : Fragment(), SwipeToDeleteListener {
     }
 
     private fun setupSwipeToDelete() {
-        val swipeToDeleteCallback = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+        val swipeToDeleteCallback = object :
+            ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
+                target: RecyclerView.ViewHolder,
             ): Boolean {
                 // Not used for swipe-to-delete
                 return false
@@ -155,8 +188,9 @@ class FavFragment : Fragment(), SwipeToDeleteListener {
         val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
         itemTouchHelper.attachToRecyclerView(favBinding.favRv)
     }
+
     override fun onSwipeToDelete(position: Int) {
-        val item  = favAdapter.currentList[position]
+        val item = favAdapter.currentList[position]
         favViewModel.deleteFavWeather(item)
         showUndoSnackbar(item, position)
     }
@@ -178,5 +212,15 @@ class FavFragment : Fragment(), SwipeToDeleteListener {
 
     private fun undoDelete(deletedItem: DatabaseWeather, position: Int) {
         favViewModel.addFavWeather(deletedItem)
+    }
+
+    override fun onItemClickListener(weather: DatabaseWeather) {
+        val bundle = Bundle()
+        bundle.putString("lat", weather.lat)
+        bundle.putString("lon", weather.lon)
+        val fragment = HomeFragment()
+        fragment.arguments = bundle
+        findNavController().navigate(R.id.action_favFragment_to_homeFragment, bundle)
+
     }
 }

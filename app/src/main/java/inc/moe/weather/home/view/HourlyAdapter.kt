@@ -9,8 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import inc.moe.weather.R
 import inc.moe.weather.databinding.HourlyItemLayoutBinding
-import inc.moe.weather.getDateForHourly
-import inc.moe.weather.getImage
+import inc.moe.weather.utils.getDateForHourly
+import inc.moe.weather.utils.getImage
 import inc.moe.weather.model.Hourly
 import inc.moe.weather.model.Weather
 
