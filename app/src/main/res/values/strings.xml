@@ -32,7 +32,7 @@
     <string name="celsius">Celsius</string>
     <string name="fahrenheit">Fahrenheit</string>
 
-
+<string name="choose_gps">Choose from map</string>
     <string name="snack_bar_no_network">Check your network please </string>
     <string name="no_location_permission">We cannot fetch your location.
     Please allow Weather to access your location</string>

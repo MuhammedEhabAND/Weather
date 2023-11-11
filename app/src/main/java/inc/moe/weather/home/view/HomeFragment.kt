@@ -16,11 +16,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -61,6 +63,12 @@ class HomeFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let {
+            receivedLat = it.getString("lat").toString()
+            receivedLon = it.getString("lon").toString()
+        }
+        Log.i("TAG", "onViewCreated: $receivedLat ,$receivedLon")
+
     }
 
 
@@ -71,6 +79,28 @@ class HomeFragment : Fragment() {
         homeViewBinding = FragmentHomeBinding.inflate(inflater, container, false)
         // Inflate the layout for this fragment
         // Load the settings initially
+        homeViewBinding.editIcon.setOnClickListener {
+            val popupMenu = PopupMenu(requireContext(), homeViewBinding.editIcon)
+
+            // Inflate the menu resource
+            popupMenu.menuInflater.inflate(R.menu.edit_menu, popupMenu.menu)
+
+            // Handle menu item clicks (optional)
+            popupMenu.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.mapFragment -> {
+                        findNavController().navigate(item.itemId)
+                        true
+                    }
+                    // Handle other menu items as needed
+                    else -> false
+                }
+            }
+
+            // Show the PopupMenu
+            popupMenu.show()
+
+        }
 
         val settingsList = SettingsData.settingsList
 
@@ -112,10 +142,9 @@ class HomeFragment : Fragment() {
         return homeViewBinding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        receivedLat = arguments?.getString("lat").toString()
-        receivedLon = arguments?.getString("lon").toString()
 
         fragmentView = view
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -185,7 +214,8 @@ class HomeFragment : Fragment() {
                     }
 
 
-                } else {
+                }
+            } else {
                     homeViewModel.getCachedWeatherResponse()
                     lifecycleScope.launch {
                         homeViewModel.weatherCachedResponse.collectLatest { result ->
@@ -210,7 +240,7 @@ class HomeFragment : Fragment() {
                     }
 
 
-                }
+
 
             }
         }
@@ -314,8 +344,8 @@ class HomeFragment : Fragment() {
             hourlyAdapter.submitList(result.weatherResponse.hourly)
         }, 450)
 
-    }
 
+    }
 
 
     private fun animateSuccessViews() {

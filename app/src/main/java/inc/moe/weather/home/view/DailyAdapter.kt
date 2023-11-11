@@ -13,6 +13,7 @@ import inc.moe.weather.utils.getDateForDaily
 import inc.moe.weather.utils.getImage
 import inc.moe.weather.model.Daily
 import inc.moe.weather.model.Weather
+import inc.moe.weather.utils.Constants
 
 class DailyAdapter : ListAdapter<Daily, DailyAdapter.ViewHolder>(
     DailyDiffUtil()
@@ -35,7 +36,7 @@ class DailyAdapter : ListAdapter<Daily, DailyAdapter.ViewHolder>(
         holder.binding.let {
             it.day.text = "${getDateForDaily(currentWeatherResponse.dt)}"
             it.weatherType.text = "${currentWeatherResponse.weather.first().main}"
-            it.highestAndLowest.text = "${currentWeatherResponse.temp.max.toInt()}\u2103 / ${currentWeatherResponse.temp.min.toInt()}℃"
+            it.highestAndLowest.text = "${currentWeatherResponse.temp.max.toInt()}${Constants.CURRENT_WEATHER_UNIT} / ${currentWeatherResponse.temp.min.toInt()}${Constants.CURRENT_WEATHER_UNIT}"
 
         }
 

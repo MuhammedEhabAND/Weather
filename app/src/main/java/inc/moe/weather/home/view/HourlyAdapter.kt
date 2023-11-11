@@ -13,6 +13,7 @@ import inc.moe.weather.utils.getDateForHourly
 import inc.moe.weather.utils.getImage
 import inc.moe.weather.model.Hourly
 import inc.moe.weather.model.Weather
+import inc.moe.weather.utils.Constants
 
 class HourlyAdapter : ListAdapter<Hourly, HourlyAdapter.ViewHolder>(
     HourlyDiffUtil()
@@ -35,7 +36,7 @@ class HourlyAdapter : ListAdapter<Hourly, HourlyAdapter.ViewHolder>(
         holder.binding.let {
             it.day.text = "${getDateForHourly(currentWeatherResponse.dt)}"
             it.weatherType.text = "${currentWeatherResponse.weather.first().main}"
-            it.highestAndLowest.text = "${currentWeatherResponse.temp.toInt()}℃ "
+            it.highestAndLowest.text = "${currentWeatherResponse.temp.toInt()}${Constants.CURRENT_WEATHER_UNIT} "
 
         }
 

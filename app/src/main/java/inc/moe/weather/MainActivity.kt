@@ -2,6 +2,7 @@ package inc.moe.weather
 
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -45,6 +46,8 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
+
     private fun animateNavBar() {
         homeActivityViewBinding.navigatorBar.postDelayed({
             homeActivityViewBinding.navigatorBar.translationY = homeActivityViewBinding.navigatorBar.height.toFloat()
@@ -58,6 +61,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return super.onOptionsItemSelected(item)
+
     }
 
 }

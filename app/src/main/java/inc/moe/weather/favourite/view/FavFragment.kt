@@ -100,6 +100,8 @@ class FavFragment : Fragment(), SwipeToDeleteListener, OnItemClickListener {
         }
     }
 
+
+
     private fun setupRecycler() {
         favAdapter = FavAdapter(requireContext(), this, this)
         favBinding.favRv.adapter = favAdapter

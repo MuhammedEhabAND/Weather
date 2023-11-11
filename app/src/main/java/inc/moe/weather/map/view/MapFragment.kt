@@ -2,6 +2,7 @@ package inc.moe.weather.map.view
 
 import android.content.Context.MODE_PRIVATE
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +12,7 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -18,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 import inc.moe.notesapp.database.WeatherLocalSource
 import inc.moe.weather.R
 import inc.moe.weather.databinding.FragmentMapBinding
+import inc.moe.weather.home.view.HomeFragment
 import inc.moe.weather.map.viewmodel.MapViewModel
 import inc.moe.weather.map.viewmodel.MapViewModelFactory
 import inc.moe.weather.network.ApiState
@@ -44,6 +47,7 @@ class MapFragment : Fragment() {
     private lateinit var mapController: IMapController
     private lateinit var mMyLocationOverlay: MyLocationNewOverlay
     private lateinit var mapViewModel: MapViewModel
+    private var isCameFromHome =false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -63,8 +67,34 @@ class MapFragment : Fragment() {
         return binding.root
     }
 
+    override fun onResume() {
+        super.onResume()
+        val navController = findNavController()
+
+        val previousBackStackEntry = navController.previousBackStackEntry
+        if (previousBackStackEntry != null) {
+            val previousFragmentId = previousBackStackEntry.destination.id
+            isCameFromHome = previousFragmentId == R.id.homeFragment
+            Log.i("TAG", "onResume: $isCameFromHome")
+        } else {
+            // Handle the case where there is no previous fragment in the back stack
+        }
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+
+
+
+
+
+
+
+
+
+
+
         binding.map.setTileSource(TileSourceFactory.MAPNIK)
         binding.map.setMultiTouchControls(true)
         mapController = binding.map.controller
@@ -129,7 +159,19 @@ class MapFragment : Fragment() {
                             mapViewModel.weatherResponse.collectLatest {
                                 result->when(result){
                                     is ApiState.Success -> {
-                                        findNavController().navigateUp()
+                                        if(!isCameFromHome){
+                                            findNavController().navigateUp()
+                                        }else{
+                                            Log.i("TAG", "singleTapConfirmedHelper: ")
+                                            val bundle = Bundle()
+                                            bundle.putString("lat", latitude)
+                                            bundle.putString("lon", longitude)
+                                            val fragment = HomeFragment()
+                                            fragment.arguments = bundle
+                                            findNavController().navigate(R.id.action_mapFragment_to_homeFragment , bundle)
+                                        }
+
+
                                     }
                                     is ApiState.Failure -> {
 
