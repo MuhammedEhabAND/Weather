@@ -28,7 +28,7 @@ class FavViewModel(private val iRepo: IRepo) : ViewModel() {
 
     }
 
-    private fun getAllFavWeather() {
+    fun getAllFavWeather() {
         _weatherData.value= DatabaseState.Loading
         viewModelScope.launch(Dispatchers.IO) {
             iRepo.getAllFavWeathers().catch {

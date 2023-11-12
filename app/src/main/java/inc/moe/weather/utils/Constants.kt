@@ -2,8 +2,9 @@ package inc.moe.weather.utils
 
 class Constants {
     companion object {
-        var APIKEY = "640189df24a520862d556e638f470c75"
-
+//        var APIKEY = "640189df24a520862d556e638f470c75"
+        var APIKEY = "a85717f57b6bd30e011747de59dc3a60"
+        var CURRENT_LANGUAGE= "en"
         var CACHE_FILE_NAME: String ="Cached Weather"
         var cacheDirectory: String=""
         var CURRENT_SELECTED_UNIT ="metric"

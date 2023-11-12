@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">الطقس</string>
+    <string name="hello_blank_fragment">مرحبًا بك في الشاشة الفارغة</string>
+    <string name="pressure">الضغط</string>
+    <string name="humidity">الرطوبة</string>
+    <string name="wind">الرياح</string>
+    <string name="clouds">السحب</string>
+    <string name="ultra_violet">الأشعة فوق البنفسجية</string>
+    <string name="visibility">الرؤية</string>
+    <string name="hourly_forecast">التوقعات اليومية</string>
+    <string name="daily_forecast">التوقعات الاسبوعية</string>
+    <string name="more_details_title">مزيد من التفاصيل</string>
+    <string name="try_again">حاول مرة أخرى</string>
+    <string name="home_bottom_icon">الرئيسية</string>
+    <string name="fav_bottom_icon">المفضلة</string>
+    <string name="settings_icon">الإعدادات</string>
+    <string name="allow_btn">السماح</string>
+    <string name="check_btn">التحقق</string>
+
+    <string name="wind_speed_changing">عليك تغيير درجة الحراره ايضا</string>
+    <string name="temp_changing">عليك تغيير سرعة الرياح ايضا</string>
+    <string name="location">الموقع</string>
+    <string name="gps">نظام تحديد المواقع</string>
+    <string name="maps">الخرائط</string>
+    <string name="no_internet"> لا يوجد اتصال بالإنترنت لجلب بيانات الطقس ، تحقق من واي فاي الخاص بك؟</string>
+    <string name="language">اللغة</string>
+    <string name="english">الإنجليزية</string>
+    <string name="arabic">العربية</string>
+    <string name="wind_speed_unit">وحدة سرعة الرياح</string>
+    <string name="meter">متر / ثانية</string>
+    <string name="mile">ميل / ساعة</string>
+    <string name="notification">الإشعارات</string>
+    <string name="enable">تمكين</string>
+    <string name="disable">تعطيل</string>
+    <string name="temp">درجة الحرارة</string>
+    <string name="celsius">درجة مئوية</string>
+    <string name="fahrenheit">درجة فهرنهايت</string>
+    <string name="choose_gps">اختر من الخريطة</string>
+    <string name="error_message">حدث خطأ ما</string>
+    <string name="snack_bar_no_network">تحقق من اتصالك بالشبكة من فضلك</string>
+    <string name="no_location_permission">لا يمكننا جلب موقعك.
+        يرجى السماح لتطبيق الطقس بالوصول إلى موقعك</string>
+</resources>

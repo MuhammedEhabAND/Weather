@@ -5,13 +5,13 @@ import inc.moe.weather.R
 import inc.moe.weather.model.Settings
 
 object SettingsData {
-
+    var tempAndWind:Boolean = true
     var settingsList :List<Settings> = listOf(
 //        Settings(R.string.location , R.drawable.location_expanded , R.string.gps , R.string.maps , false ,false),
         Settings(R.string.language , R.drawable.language_expanded , R.string.english , R.string.arabic ,false , true),
-        Settings(R.string.wind_speed_unit , R.drawable.wind_expanded , R.string.meter , R.string.mile , false , true),
-        Settings(R.string.notification , R.drawable.notification_expanded , R.string.enable , R.string.disable ,false , true),
-        Settings(R.string.temp , R.drawable.temp_expanded , R.string.celsius , R.string.fahrenheit ,false , true)
+        Settings(R.string.wind_speed_unit , R.drawable.wind_expanded , R.string.meter , R.string.mile , false , tempAndWind),
+        Settings(R.string.temp , R.drawable.temp_expanded , R.string.celsius , R.string.fahrenheit ,false , tempAndWind),
+        Settings(R.string.notification , R.drawable.notification_expanded , R.string.enable , R.string.disable ,false , true)
     )
     fun saveSettings(context: Context) {
         val sharedPreferences = context.getSharedPreferences("MySettings", Context.MODE_PRIVATE)

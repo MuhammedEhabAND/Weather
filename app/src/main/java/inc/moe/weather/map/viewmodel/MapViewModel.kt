@@ -8,6 +8,7 @@ import inc.moe.weather.model.WeatherResponse
 import inc.moe.weather.network.ApiState
 import inc.moe.weather.network.DatabaseState
 import inc.moe.weather.repo.IRepo
+import inc.moe.weather.utils.Constants
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,16 +25,16 @@ class MapViewModel(private val iRepo: IRepo) : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO) {
             Log.i("TAG", "getWeatherMethod: ")
-            iRepo.getWeather(lat = lat , lon = lon , units = "metric").catch {
+            iRepo.getWeather(lat = lat , lon = lon , units = Constants.CURRENT_SELECTED_UNIT , language = Constants.CURRENT_LANGUAGE).catch {
 
                 e->
-                Log.i("TAG", "getWeather: ${e.cause?.message.toString()} ")
+                Log.i("TAG", "getWeather: ${e.message.toString()} ")
                     _weatherResponse.value = ApiState.Failure(e.message.toString())
 
             }
                 .collect{
                     data->Log.i("TAG", "weatherResponse: ${data}")
-                    val weather =convertWeatherResponseToDatabaseWeather(data , lon , lat)
+                    val weather = convertWeatherResponseToDatabaseWeather(data , lon , lat)
                          iRepo.addWeather(weather)
                         _weatherResponse.value = ApiState.Success(data)
 
@@ -46,7 +47,7 @@ class MapViewModel(private val iRepo: IRepo) : ViewModel() {
 
     private fun convertWeatherResponseToDatabaseWeather(data: WeatherResponse ,lon:String ,lat:String):DatabaseWeather {
         val title = data.timezone
-        val weatherType = data.current.weather.first().main
+        val weatherType = data.current.weather.first().description
         val weatherDegree = data.current.temp
         val weatherImage =data.current.weather.first().icon
         return DatabaseWeather(lon ,lat ,title ,weatherType ,weatherDegree ,weatherImage )

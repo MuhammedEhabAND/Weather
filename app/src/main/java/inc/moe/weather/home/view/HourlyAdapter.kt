@@ -35,7 +35,7 @@ class HourlyAdapter : ListAdapter<Hourly, HourlyAdapter.ViewHolder>(
         val currentWeatherResponse = getItem(position)
         holder.binding.let {
             it.day.text = "${getDateForHourly(currentWeatherResponse.dt)}"
-            it.weatherType.text = "${currentWeatherResponse.weather.first().main}"
+            it.weatherType.text = "${currentWeatherResponse.weather.first().description}"
             it.highestAndLowest.text = "${currentWeatherResponse.temp.toInt()}${Constants.CURRENT_WEATHER_UNIT} "
 
         }

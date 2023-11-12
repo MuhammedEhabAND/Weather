@@ -19,6 +19,10 @@
     <string name="location">Location</string>
     <string name="gps">GPS</string>
     <string name="maps">Maps</string>
+    <string name="check_btn">Check</string>
+    <string name="wind_speed_changing">You have to change temp also</string>
+    <string name="temp_changing">You have to change temp also</string>
+    <string name="no_internet">there is no internet to fetch the weather data , check your wifi ?</string>
     <string name="language">Language</string>
     <string name="english">English</string>
     <string name="arabic">Arabic</string>
@@ -31,6 +35,7 @@
     <string name="temp">Temperature</string>
     <string name="celsius">Celsius</string>
     <string name="fahrenheit">Fahrenheit</string>
+    <string name="error_message">Something Wrong Happens</string>
 
 <string name="choose_gps">Choose from map</string>
     <string name="snack_bar_no_network">Check your network please </string>

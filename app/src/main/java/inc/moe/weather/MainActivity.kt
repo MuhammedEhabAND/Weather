@@ -1,10 +1,7 @@
 package inc.moe.weather
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
@@ -14,28 +11,33 @@ import androidx.navigation.Navigation.findNavController
 import androidx.navigation.ui.NavigationUI.setupWithNavController
 import com.google.android.material.navigation.NavigationBarView
 import inc.moe.weather.databinding.ActivityMainBinding
-import inc.moe.weather.utils.SettingsData
 import inc.moe.weather.utils.Constants
+import inc.moe.weather.utils.SettingsData
+
 
 const val PERMISSION_ID = 44
 
-class MainActivity : AppCompatActivity() {
+ class MainActivity : AppCompatActivity() {
 
 
-    private lateinit var homeActivityViewBinding:ActivityMainBinding
-    private lateinit var navController :NavController
+    private lateinit var homeActivityViewBinding: ActivityMainBinding
+    private lateinit var navController: NavController
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
 
-        SettingsData.loadSettings(context = applicationContext)
+        SettingsData.loadSettings(applicationContext)
         homeActivityViewBinding = ActivityMainBinding.inflate(layoutInflater)
+
+
         setContentView(homeActivityViewBinding.root)
+
 
         Constants.cacheDirectory = this.cacheDir.absolutePath.toString()
         navController = findNavController(this, R.id.nav_host_fragment)
-        val bottomNavBar = homeActivityViewBinding.navigatorBar  as NavigationBarView
+        val bottomNavBar = homeActivityViewBinding.navigatorBar as NavigationBarView
         setupWithNavController(bottomNavBar, navController)
         navController.addOnDestinationChangedListener(OnDestinationChangedListener { controller: NavController?, destination: NavDestination, arguments: Bundle? ->
             Log.d(
@@ -47,15 +49,14 @@ class MainActivity : AppCompatActivity() {
         animateNavBar()
 
 
-
-
     }
-
+//
 
 
     private fun animateNavBar() {
         homeActivityViewBinding.navigatorBar.postDelayed({
-            homeActivityViewBinding.navigatorBar.translationY = homeActivityViewBinding.navigatorBar.height.toFloat()
+            homeActivityViewBinding.navigatorBar.translationY =
+                homeActivityViewBinding.navigatorBar.height.toFloat()
             homeActivityViewBinding.navigatorBar.animate()
 
                 .translationY(0f)
@@ -68,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
 
     }
+
 
 }
 

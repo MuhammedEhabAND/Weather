@@ -1,6 +1,7 @@
 package inc.moe.weather.home.viewmodel
 
 import android.hardware.biometrics.BiometricManager.Strings
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,59 +21,60 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class HomeViewModel(private val iRepo: IRepo) : ViewModel() {
-    var isPermissionGranted: Boolean = false
+
     private var _weatherResponse: MutableStateFlow<ApiState> = MutableStateFlow(ApiState.Loading)
-
-
 
     val weatherResponse: StateFlow<ApiState>
         get() = _weatherResponse
-    private  var _weatherCachedResponse:MutableStateFlow<ApiState> = MutableStateFlow(ApiState.Loading)
-    val weatherCachedResponse: StateFlow<ApiState>
-        get()=_weatherCachedResponse
 
 
-    fun getCurrentWeather(lat:String ,lon:String , unit :String) {
+
+    fun getCurrentWeather(lat: String, lon: String, unit: String , language:String) {
+        _weatherResponse.value = ApiState.Loading
         viewModelScope.launch(Dispatchers.IO) {
-           resetWeatherResponse()
-            if (isPermissionGranted) {
-
-
-                iRepo.getWeather(lat = lat, lon = lon, units = unit)
+            iRepo.getWeather(lat, lon, unit ,language)
                 .catch { e ->
-                        _weatherResponse.value = ApiState.Failure(e.message.toString())
-                    }
+                    _weatherResponse.value = ApiState.Failure(e.message.toString())
+                }
                 .collect {
                         data ->
-                        _weatherResponse.value = ApiState.Success(data)
-                        iRepo.cacheWeatherData(weatherData =  data)
-
-                    }
-            } else {
-                resetWeatherResponse()
-                _weatherResponse.value = ApiState.Failure(R.string.no_location_permission.toString())
-            }
-
-
+                    _weatherResponse.value = ApiState.Success(data)
+                    iRepo.cacheWeatherData(data)
+                }
         }
     }
 
-    fun getCachedWeatherResponse(){
+    fun getLocationPermission() {
+        _weatherResponse.value = ApiState.Loading
         viewModelScope.launch(Dispatchers.IO) {
-            if(iRepo.readCachedWeatherData()!=null) {
-                _weatherCachedResponse.value = ApiState.Success(iRepo.readCachedWeatherData()!!)
-            }else{
-                _weatherCachedResponse.value = ApiState.Failure("there is no internet to fetch the weather data")
+            iRepo.getWeather("null", "null", "null" ,"null")
+                .catch { e ->
+                    _weatherResponse.value = ApiState.Failure(e.message.toString() ,1)
+                }
+                .collect {
+                        data ->
+                    _weatherResponse.value = ApiState.Success(data)
+                    iRepo.cacheWeatherData(data)
+                }
+        }
+    }
 
+    fun getCachedWeatherResponse() {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (iRepo.readCachedWeatherData() != null) {
+
+                _weatherResponse.value = ApiState.Success(iRepo.readCachedWeatherData()!! ,true)
+                Log.i("TAG", "getCachedWeatherResponse: success ")
+            } else {
+                _weatherResponse.value = ApiState.Failure(R.string.no_internet.toString() , 2)
+
+                Log.i("TAG", "getCachedWeatherResponse: success ")
             }
         }
     }
 
 
-    fun resetWeatherResponse() {
-        _weatherResponse = MutableStateFlow(ApiState.Loading)
 
-    }
 
 
 }

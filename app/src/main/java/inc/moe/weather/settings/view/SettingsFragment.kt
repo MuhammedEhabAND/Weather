@@ -10,7 +10,7 @@ import inc.moe.weather.utils.SettingsData
 
 class SettingsFragment : Fragment() {
     private lateinit var viewBindingSettings: FragmentSettingsBinding
-    private val settingsData = SettingsData.settingsList
+
     private lateinit var settingsAdapter:SettingsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,8 +47,11 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        settingsAdapter =SettingsAdapter(requireContext())
-        settingsAdapter.submitList(settingsData)
+        settingsAdapter =SettingsAdapter(requireActivity())
+
+        settingsAdapter.submitList(SettingsData.settingsList)
+
+
         viewBindingSettings.settingsRv.adapter = settingsAdapter
 
 

@@ -35,7 +35,7 @@ class DailyAdapter : ListAdapter<Daily, DailyAdapter.ViewHolder>(
         val currentWeatherResponse = getItem(position)
         holder.binding.let {
             it.day.text = "${getDateForDaily(currentWeatherResponse.dt)}"
-            it.weatherType.text = "${currentWeatherResponse.weather.first().main}"
+            it.weatherType.text = "${currentWeatherResponse.weather.first().description}"
             it.highestAndLowest.text = "${currentWeatherResponse.temp.max.toInt()}${Constants.CURRENT_WEATHER_UNIT} / ${currentWeatherResponse.temp.min.toInt()}${Constants.CURRENT_WEATHER_UNIT}"
 
         }

@@ -17,11 +17,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="15dp"
         android:layout_marginTop="16dp"
-        android:gravity="start"
+        android:gravity="left"
         android:textColor="@color/white"
         android:textSize="18sp"
-        app:layout_constraintEnd_toStartOf="@id/day"
-        app:layout_constraintStart_toStartOf="@+id/cardView"
+        app:layout_constraintRight_toLeftOf="@id/day"
+        app:layout_constraintLeft_toLeftOf="@+id/cardView"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Today,Nov 06 2023" />
 
@@ -31,12 +31,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="15dp"
-        android:gravity="end"
+        android:gravity="right"
         android:textColor="@color/white"
 
         android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="@+id/cardView"
-        app:layout_constraintStart_toEndOf="@id/date"
+        app:layout_constraintRight_toRightOf="@+id/cardView"
+        app:layout_constraintLeft_toRightOf="@id/date"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="11:13 PM" />
 
@@ -177,7 +177,7 @@
                     android:layout_height="150dp"
                     android:layout_marginTop="10dp"
 
-                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
 
                     />
@@ -189,11 +189,12 @@
                     android:layout_marginStart="25dp"
                     android:layout_marginEnd="12dp"
                     android:gravity="center"
+                    android:textAlignment="gravity"
                     android:textColor="@color/white"
                     android:textSize="60sp"
                     app:layout_constraintBottom_toBottomOf="@+id/weatherImage"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/weatherImage"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintLeft_toRightOf="@+id/weatherImage"
                     app:layout_constraintTop_toTopOf="@+id/weatherImage"
                     tools:text="26°C" />
 
@@ -512,11 +513,11 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
-                    android:textAlignment="center"
+                    android:gravity="center"
                     android:textColor="@color/white"
                     android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="@+id/weatherDegree"
-                    app:layout_constraintStart_toStartOf="@+id/weatherDegree"
+                    app:layout_constraintLeft_toLeftOf="@+id/weatherDegree"
+                    app:layout_constraintRight_toRightOf="@+id/weatherDegree"
                     app:layout_constraintTop_toBottomOf="@+id/weatherDegree"
                     tools:text="Clear" />
 
