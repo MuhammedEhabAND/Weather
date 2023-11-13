@@ -1,7 +1,6 @@
 package inc.moe.notesapp.database
 
 import android.content.Context
-import android.util.Log
 import inc.moe.weather.db.AppDatabase
 import inc.moe.weather.db.WeatherDao
 import inc.moe.weather.model.DatabaseWeather
@@ -41,6 +40,9 @@ class WeatherLocalSource private constructor(var context: Context) : IWeatherLoc
         return  weatherDao.getAllFavWeather()
     }
 
+    override suspend fun updateWeather(weather: DatabaseWeather) {
+        weatherDao.updateWeather(weather)
+    }
 
 
 }

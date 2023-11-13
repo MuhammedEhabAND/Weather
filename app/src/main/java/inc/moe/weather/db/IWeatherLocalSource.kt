@@ -7,6 +7,9 @@ interface IWeatherLocalSource {
     suspend fun addWeather(weather: DatabaseWeather):Long
 
     suspend fun deleteWeather(weather: DatabaseWeather):Int
-     fun  getAllFavWeathers(): Flow<List<DatabaseWeather>>
+    fun  getAllFavWeathers(): Flow<List<DatabaseWeather>>
+
+    suspend fun updateWeather(weather:DatabaseWeather)
+
 
 }

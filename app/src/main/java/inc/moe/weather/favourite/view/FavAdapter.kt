@@ -17,7 +17,12 @@ import inc.moe.weather.utils.Constants
 import inc.moe.weather.utils.getLocationInfo
 
 
-class FavAdapter (val context: Context, private val swipeToDeleteListener: SwipeToDeleteListener, val onItemClickListener: OnItemClickListener): ListAdapter<DatabaseWeather, FavAdapter.ViewHolder>(
+class FavAdapter(
+    val context: Context,
+    private var swipeToDeleteListener: SwipeToDeleteListener? = null,
+    private var onItemClickListener: OnItemClickListener? = null,
+    private var isNotification: Boolean = false,
+) : ListAdapter<DatabaseWeather, FavAdapter.ViewHolder>(
     FavDiffUtil()
 ) {
 
@@ -39,18 +44,16 @@ class FavAdapter (val context: Context, private val swipeToDeleteListener: Swipe
     }
 
 
-
-
     override fun onBindViewHolder(holder: FavAdapter.ViewHolder, position: Int) {
         val dummyFav = getItem(position)
 
-        showData(holder , dummyFav)
+        showData(holder, dummyFav)
         if (!animatedPositions.contains(position)) {
             startAnimation(holder, position)
             animatedPositions.add(position)
         }
-        holder.binding.card.setOnClickListener{
-            onItemClickListener.onItemClickListener(dummyFav)
+        holder.binding.card.setOnClickListener {
+            onItemClickListener?.onItemClickListener(dummyFav)
         }
 
     }
@@ -59,7 +62,8 @@ class FavAdapter (val context: Context, private val swipeToDeleteListener: Swipe
         holder.binding.let {
 //            it.titleTv.text = dummyFav.timeZone
 
-            val locationInfo = getLocationInfo(dummyFav.lat.toDouble(), dummyFav.lon.toDouble(), context)
+            val locationInfo =
+                getLocationInfo(dummyFav.lat.toDouble(), dummyFav.lon.toDouble(), context)
             if (locationInfo.cityName != "wrong") {
                 val cityName = locationInfo.cityName
                 it.titleTv.text = cityName
@@ -70,21 +74,31 @@ class FavAdapter (val context: Context, private val swipeToDeleteListener: Swipe
 
 
             it.weatherType.text = dummyFav.weatherType
-            it.contentTv.text="${dummyFav.temp}${Constants.CURRENT_WEATHER_UNIT}"
-            Glide.with(it.logoIv)
-                .load(getImage(dummyFav.image, 4))
-                .placeholder(R.drawable.place_holder)
-                .error(R.drawable.error_weather)
-                .into(it.logoIv)
+            if (isNotification) {
+                if (dummyFav.isScheduled) {
+                    it.logoIv.setImageResource(R.drawable.notification_bell)
+
+                }else{
+                    it.logoIv.setImageResource(R.drawable.muted_notification_bell)
+                }
+
+            } else {
+                it.contentTv.text = "${dummyFav.temp}${Constants.CURRENT_WEATHER_UNIT}"
+                Glide.with(it.logoIv)
+                    .load(getImage(dummyFav.image, 4))
+                    .placeholder(R.drawable.place_holder)
+                    .error(R.drawable.error_weather)
+                    .into(it.logoIv)
+            }
         }
     }
 
 
-    private fun startAnimation(holder: ViewHolder, position:Int) {
+    private fun startAnimation(holder: ViewHolder, position: Int) {
 
         if (position % 2 == 0) {
             animateToLeft(holder)
-        }else {
+        } else {
             animateToRight(holder)
         }
 
@@ -99,7 +113,7 @@ class FavAdapter (val context: Context, private val swipeToDeleteListener: Swipe
                 .setDuration(500)
                 .start()
         }, 100)
-       }
+    }
 
     private fun animateToLeft(holder: ViewHolder) {
 
@@ -113,14 +127,16 @@ class FavAdapter (val context: Context, private val swipeToDeleteListener: Swipe
     }
 
 
-
     class FavDiffUtil
         : DiffUtil.ItemCallback<DatabaseWeather>() {
         override fun areItemsTheSame(oldItem: DatabaseWeather, newItem: DatabaseWeather): Boolean {
             return oldItem === newItem
         }
 
-        override fun areContentsTheSame(oldItem: DatabaseWeather, newItem: DatabaseWeather): Boolean {
+        override fun areContentsTheSame(
+            oldItem: DatabaseWeather,
+            newItem: DatabaseWeather,
+        ): Boolean {
             return oldItem == newItem
         }
 

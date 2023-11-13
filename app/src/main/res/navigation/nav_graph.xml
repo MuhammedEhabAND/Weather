@@ -36,7 +36,13 @@
         android:id="@+id/settingsFragment"
         android:name="inc.moe.weather.settings.view.SettingsFragment"
         android:label="@string/settings_icon"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_notificationFragment"
+            app:destination="@id/notificationFragment"
+            app:popUpTo="@id/settingsFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
     <fragment
         android:id="@+id/mapFragment"
         android:name="inc.moe.weather.map.view.MapFragment"

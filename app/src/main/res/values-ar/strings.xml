@@ -41,4 +41,16 @@
     <string name="snack_bar_no_network">تحقق من اتصالك بالشبكة من فضلك</string>
     <string name="no_location_permission">لا يمكننا جلب موقعك.
         يرجى السماح لتطبيق الطقس بالوصول إلى موقعك</string>
+    <string name="notification_center">مركز الإشعارات</string>
+    <string name="alarm_text">إنذار</string>
+
+    <string name="alert_text">تنبيه</string>
+    <string name="start_btn">ضبط المنبه</string>
+
+    <string name="end_btn">انتهاء</string>
+    <string name="select_title">اختيار المكان</string>
+
+    <string name="choose_the_time">أختار وقت التنبية</string>
+    <string name="choose_the_date">أختار التاريخ</string>
+    <string name="please_select_date_first">من فضلك قم باختيار الوقت و التاريخ اولا</string>
 </resources>

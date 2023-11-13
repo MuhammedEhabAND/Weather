@@ -10,6 +10,7 @@ data class WeatherResponse(
     val timezone_offset: Long,
     val current: Current,
     val minutely: List<Minutely>,
+    val alerts: List<Alerts>?,
     val hourly: List<Hourly>,
     val daily: List<Daily>,
     ):Serializable

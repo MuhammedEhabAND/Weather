@@ -8,6 +8,7 @@ import android.provider.Settings.Global.getString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView.OnItemClickListener
 import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -23,7 +24,7 @@ import inc.moe.weather.utils.LanguageHelper
 import inc.moe.weather.utils.SettingsData
 import java.util.Locale
 
-class SettingsAdapter(val activity: Activity) : ListAdapter<Settings, SettingsAdapter.ViewHolder>(
+class SettingsAdapter(val activity: Activity , val onNotificationClickListener: OnNotificationClickListener) : ListAdapter<Settings, SettingsAdapter.ViewHolder>(
     SettingsDiffUtil()
 ) {
 
@@ -178,11 +179,7 @@ class SettingsAdapter(val activity: Activity) : ListAdapter<Settings, SettingsAd
             } else {
                 it.expandImage.visibility = View.GONE
                 it.card.setOnClickListener {
-                    Toast.makeText(
-                        activity.applicationContext,
-                        "go to notification center",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    onNotificationClickListener.onCLick()
                 }
             }
 

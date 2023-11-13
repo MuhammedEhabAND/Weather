@@ -218,8 +218,8 @@ class FavFragment : Fragment(), SwipeToDeleteListener, OnItemClickListener {
 
     override fun onItemClickListener(weather: DatabaseWeather) {
         val bundle = Bundle()
-        bundle.putString("lat", weather.lat)
-        bundle.putString("lon", weather.lon)
+        bundle.putString("lat", weather.lat.toString())
+        bundle.putString("lon", weather.lon.toString())
         val fragment = HomeFragment()
         fragment.arguments = bundle
         findNavController().navigate(R.id.action_favFragment_to_homeFragment, bundle)

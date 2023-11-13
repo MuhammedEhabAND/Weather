@@ -4,11 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.AdapterView.OnItemClickListener
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import inc.moe.weather.R
 import inc.moe.weather.databinding.FragmentSettingsBinding
 import inc.moe.weather.utils.SettingsData
 
-class SettingsFragment : Fragment() {
+class SettingsFragment : Fragment()  ,OnNotificationClickListener {
     private lateinit var viewBindingSettings: FragmentSettingsBinding
 
     private lateinit var settingsAdapter:SettingsAdapter
@@ -47,7 +51,7 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        settingsAdapter =SettingsAdapter(requireActivity())
+        settingsAdapter =SettingsAdapter(requireActivity() , this)
 
         settingsAdapter.submitList(SettingsData.settingsList)
 
@@ -58,6 +62,12 @@ class SettingsFragment : Fragment() {
 
 
 
+    }
+
+
+
+    override fun onCLick() {
+        findNavController().navigate(R.id.action_settingsFragment_to_notificationFragment)
     }
 
 

@@ -54,6 +54,10 @@ class Repo private constructor(
 
     }
 
+    override suspend fun updateWeather(weather: DatabaseWeather) {
+        localSource.updateWeather(weather)
+    }
+
     override suspend fun cacheWeatherData(weatherData: WeatherResponse?) {
         val file = File(Constants.cacheDirectory, Constants.CACHE_FILE_NAME)
         withContext(Dispatchers.IO) {

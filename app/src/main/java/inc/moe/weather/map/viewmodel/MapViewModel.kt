@@ -34,7 +34,7 @@ class MapViewModel(private val iRepo: IRepo) : ViewModel() {
             }
                 .collect{
                     data->Log.i("TAG", "weatherResponse: ${data}")
-                    val weather = convertWeatherResponseToDatabaseWeather(data , lon , lat)
+                    val weather = convertWeatherResponseToDatabaseWeather(data)
                          iRepo.addWeather(weather)
                         _weatherResponse.value = ApiState.Success(data)
 
@@ -45,12 +45,12 @@ class MapViewModel(private val iRepo: IRepo) : ViewModel() {
         }
     }
 
-    private fun convertWeatherResponseToDatabaseWeather(data: WeatherResponse ,lon:String ,lat:String):DatabaseWeather {
+    private fun convertWeatherResponseToDatabaseWeather(data: WeatherResponse):DatabaseWeather {
         val title = data.timezone
         val weatherType = data.current.weather.first().description
         val weatherDegree = data.current.temp
         val weatherImage =data.current.weather.first().icon
-        return DatabaseWeather(lon ,lat ,title ,weatherType ,weatherDegree ,weatherImage )
+        return DatabaseWeather(data.lat ,data.lon ,title ,weatherType ,weatherDegree ,weatherImage )
 
     }
 
