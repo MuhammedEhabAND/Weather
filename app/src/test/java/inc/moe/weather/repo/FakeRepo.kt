@@ -18,11 +18,11 @@ import org.junit.Before
 class FakeRepo:IRepo {
 
 
-    private val databaseWeather1 = DatabaseWeather("123" , "321" ,"Alexandria" , "Clear", 2.2,"image")
-    private val databaseWeather2 = DatabaseWeather("123" , "123" ,"Alexandria" , "Clear", 2.2,"image")
-    private val databaseWeather3 = DatabaseWeather("123" , "2021" ,"Alexandria" , "Clear", 2.2,"image")
-    private val databaseWeather5 = DatabaseWeather("123" , "3201" ,"Alexandria" , "Clear", 2.2,"image")
-    private val databaseWeather4 = DatabaseWeather("123" , "32001" ,"Alexandria" , "Clear", 2.2,"image")
+    private val databaseWeather1 = DatabaseWeather(12.2 , 12.2 ,"Alexandria" , "Clear", 2.2,"image")
+    private val databaseWeather2 = DatabaseWeather(12.2 , 12.12 ,"Alexandria" , "Clear", 2.2,"image")
+    private val databaseWeather3 = DatabaseWeather(12.12 , 12.12 ,"Alexandria" , "Clear", 2.2,"image")
+    private val databaseWeather5 = DatabaseWeather(12.12 , 12.12 ,"Alexandria" , "Clear", 2.2,"image")
+    private val databaseWeather4 = DatabaseWeather(12.12 , 12.12 ,"Alexandria" , "Clear", 2.2,"image")
     private val localWeather = mutableListOf<DatabaseWeather>(databaseWeather1 ,databaseWeather2 , databaseWeather3 , databaseWeather4 ,databaseWeather5)
 
 
@@ -30,7 +30,7 @@ class FakeRepo:IRepo {
         Current(15L, 15L, 15, 15.5, 15.5, 15L, 15L, 15.5, 15.5, 15L, 15L, 15.5, 15L, 15.5,
             listOf(Weather(1L ,"" , "" , ""))
         ), listOf(Minutely(15L,15L)),
-        listOf(
+        null,listOf(
             Hourly(15L , 15.5, 15.5, 15L , 15L , 15.5, 15.5, 15L, 15L, 15.5, 15L, 15.5,
             listOf(Weather(1L,"","","")), 15.5)
         )
@@ -59,6 +59,9 @@ class FakeRepo:IRepo {
         emit(localWeather)
     }
 
+    override suspend fun updateWeather(weather: DatabaseWeather) {
+        TODO("Not yet implemented")
+    }
 
 
     override fun getWeather(

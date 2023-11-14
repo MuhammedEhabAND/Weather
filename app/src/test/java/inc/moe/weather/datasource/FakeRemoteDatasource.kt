@@ -31,6 +31,7 @@ class FakeRemoteDatasource(private var weatherResponse: WeatherResponse= Weather
         listOf(Weather(1L ,"" , "" , ""))
     ),
     listOf(Minutely(15L,15L)),
+    null,
     listOf(Hourly(
         15L ,
         15.5,

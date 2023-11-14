@@ -10,6 +10,7 @@ interface IRepo {
      suspend fun addWeather(weather: DatabaseWeather):Long
      suspend fun deleteWeather(weather: DatabaseWeather):Int
      fun  getAllFavWeathers():Flow<List<DatabaseWeather>>
-     fun getWeather(lon: String ,lat:String , units:String ,language:String ): Flow<WeatherResponse>
      suspend fun updateWeather(weather:DatabaseWeather)
+     fun getWeather(lon: String ,lat:String , units:String ,language:String ): Flow<WeatherResponse>
+
 }

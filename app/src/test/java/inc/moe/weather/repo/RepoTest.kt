@@ -26,6 +26,7 @@ class RepoTest {
         Current(15L, 15L, 15, 15.5, 15.5, 15L, 15L, 15.5, 15.5, 15L, 15L, 15.5, 15L, 15.5,
             listOf(Weather(1L ,"" , "" , ""))
         ), listOf(Minutely(15L,15L)),
+        null,
         listOf(Hourly(15L , 15.5, 15.5, 15L , 15L , 15.5, 15.5, 15L, 15L, 15.5, 15L, 15.5,
             listOf(Weather(1L,"","","")), 15.5))
         , listOf(Daily(1L, 15.5, 15.5, 15.15, 15.5, 15.5,
@@ -34,11 +35,11 @@ class RepoTest {
             15.5, 15.5,15.5,15.5,15.5,15.5,
             listOf(Weather(1L,"", "", "")), 15.5,15.15,15.5)))
 
-    private val databaseWeather1 = DatabaseWeather("123" , "321" ,"Alexandria" , "Clear", 2.2,"image")
-    private val databaseWeather2 = DatabaseWeather("123" , "123" ,"Alexandria" , "Clear", 2.2,"image")
-    private val databaseWeather3 = DatabaseWeather("123" , "2021" ,"Alexandria" , "Clear", 2.2,"image")
-    private val databaseWeather5 = DatabaseWeather("123" , "3201" ,"Alexandria" , "Clear", 2.2,"image")
-    private val databaseWeather4 = DatabaseWeather("123" , "32001" ,"Alexandria" , "Clear", 2.2,"image")
+    private val databaseWeather1 = DatabaseWeather(12.2 , 12.2 ,"Alexandria" , "Clear", 2.2,"image")
+    private val databaseWeather2 = DatabaseWeather(12.2 , 12.12 ,"Alexandria" , "Clear", 2.2,"image")
+    private val databaseWeather3 = DatabaseWeather(12.12 , 12.12 ,"Alexandria" , "Clear", 2.2,"image")
+    private val databaseWeather5 = DatabaseWeather(12.12 , 12.12 ,"Alexandria" , "Clear", 2.2,"image")
+    private val databaseWeather4 = DatabaseWeather(12.12 , 12.12 ,"Alexandria" , "Clear", 2.2,"image")
     private val localWeather = mutableListOf<DatabaseWeather>(databaseWeather1 ,databaseWeather2 , databaseWeather3 , databaseWeather4 ,databaseWeather5)
     private lateinit var fakeDatasource: FakeDatasource
     private lateinit var fakeRemoteDatasource: FakeRemoteDatasource
@@ -51,7 +52,7 @@ class RepoTest {
     }
     @Test
      fun  addWeather_Not_Exist() = runBlocking{
-        val testingWeather= DatabaseWeather("123" , "3200001" ,"Alexandria" , "Clear", 2.2,"image")
+        val testingWeather= DatabaseWeather(12.2 , 12.2 ,"Alexandria" , "Clear", 2.2,"image")
         val result = repo.addWeather(testingWeather)
         assertEquals(result , 1L)
     }
@@ -69,7 +70,7 @@ class RepoTest {
     }
     @Test
      fun  delete_Not_Exist()= runBlocking{
-        val testingWeather= DatabaseWeather("123" , "3200001" ,"Alexandria" , "Clear", 2.2,"image")
+        val testingWeather= DatabaseWeather(12.12 , 22.2 ,"Alexandria" , "Clear", 2.2,"image")
         val result = repo.deleteWeather(testingWeather)
         assertEquals(result , 0)
     }

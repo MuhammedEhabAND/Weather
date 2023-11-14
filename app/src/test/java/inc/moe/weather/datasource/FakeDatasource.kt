@@ -39,5 +39,9 @@ class FakeDatasource(var favWeather:MutableList<DatabaseWeather> = mutableListOf
 
     }
 
+    override suspend fun updateWeather(weather: DatabaseWeather) {
+        TODO("Not yet implemented")
+    }
+
 
 }
