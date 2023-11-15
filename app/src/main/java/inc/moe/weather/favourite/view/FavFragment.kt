@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -91,7 +92,7 @@ class FavFragment : Fragment(), SwipeToDeleteListener, OnItemClickListener {
                         showData(result)
                     }
 
-                    else -> {}
+
                 }
             }
         }
@@ -103,7 +104,7 @@ class FavFragment : Fragment(), SwipeToDeleteListener, OnItemClickListener {
 
 
     private fun setupRecycler() {
-        favAdapter = FavAdapter(requireContext(), this, this)
+        favAdapter = FavAdapter(requireActivity(), this, this)
         favBinding.favRv.adapter = favAdapter
         setupSwipeToDelete()
     }
@@ -149,6 +150,13 @@ class FavFragment : Fragment(), SwipeToDeleteListener, OnItemClickListener {
     }
 
     private fun animate() {
+        val layoutAnimationController =
+            AnimationUtils.loadLayoutAnimation(requireContext(), R.anim.fall_down_layout)
+        favBinding.favRv.apply {
+            visibility = View.VISIBLE
+            layoutAnimation = layoutAnimationController
+            scheduleLayoutAnimation()
+        }
         favBinding.favTitle.postDelayed({
             favBinding.favTitle.translationX = favBinding.favTitle.width.toFloat()
             favBinding.favTitle.animate()

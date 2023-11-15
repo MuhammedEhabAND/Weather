@@ -185,21 +185,21 @@ class NotificationFragment : Fragment() ,OnItemClickListener{
         disableLayout()
         binding.loadingProgressBar.visibility = View.GONE
         Log.i("TAG", "Notification showSuccess: ${databaseState.weatherResponse.size} ")
-         binding.root.postDelayed({
+
 
             binding.dataRv.visibility = View.VISIBLE
              favAdapter.submitList(databaseState.weatherResponse)
 
-         }, 100)
+
 
         if (databaseState.weatherResponse.isEmpty()) {
 
 
-            binding.lottieAnim.postDelayed({
+
                 binding.lottieAnim.animate()
                 binding.lottieAnim.visibility = View.VISIBLE
-            }, 90)
-            binding.lottieAnim.postDelayed({
+
+
 
 
                 binding.lottieAnim.translationY = binding.lottieAnim.height.toFloat()
@@ -209,7 +209,7 @@ class NotificationFragment : Fragment() ,OnItemClickListener{
                     .setDuration(500)
                     .start()
 
-            }, 100)
+
         } else {
 
             binding.lottieAnim.visibility = View.GONE
@@ -245,16 +245,16 @@ class NotificationFragment : Fragment() ,OnItemClickListener{
         if(weather.isScheduled){
             if(isStartSelected){
                 favViewModel.setScheduler(weather , time)
-                scheduler.schedule(createAlarmItem(weather))
+                scheduler.schedule(createAlarmItem(weather) , weather)
 
             }else{
                 favViewModel.disableScheduler(weather)
-//                scheduler.cancel(createAlarmItem(weather))
+                scheduler.cancel(createAlarmItem(weather) , weather)
             }
         }else{
             if(isStartSelected){
                 favViewModel.setScheduler(weather,time)
-                scheduler.schedule(createAlarmItem(weather))
+                scheduler.schedule(createAlarmItem(weather) , weather)
             }else{
                 showSnackBar()
             }
@@ -264,7 +264,7 @@ class NotificationFragment : Fragment() ,OnItemClickListener{
 
     }
     private fun createAlarmItem(weather: DatabaseWeather):AlarmItem =
-        AlarmItem( resultDateTime!!, weather.lat.toString() , weather.lon.toString())
+        AlarmItem( weather.id ,resultDateTime?: LocalDateTime.now(), weather.lat.toString() , weather.lon.toString())
     private fun showSnackBar(){
         Snackbar.make(binding.root , getString(R.string.please_select_date_first) ,Snackbar.LENGTH_SHORT).show()
     }

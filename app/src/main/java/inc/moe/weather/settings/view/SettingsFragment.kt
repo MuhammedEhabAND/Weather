@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import androidx.fragment.app.Fragment
@@ -31,20 +32,20 @@ class SettingsFragment : Fragment()  ,OnNotificationClickListener {
     }
 
     private fun animateViews() {
-        viewBindingSettings.settingsRv.postDelayed({
-            viewBindingSettings.settingsRv.translationY = viewBindingSettings.settingsRv.height.toFloat()
-            viewBindingSettings.settingsRv.animate()
-                .translationY(0f)
-                .setDuration(500)
-                .start()
-        }, 100)
-        viewBindingSettings.settingsTitle.postDelayed({
+
+        val layoutAnimationController =
+            AnimationUtils.loadLayoutAnimation(requireActivity(), R.anim.fall_down_layout)
+        viewBindingSettings.settingsRv.apply {
+            layoutAnimation = layoutAnimationController
+            scheduleLayoutAnimation()
+        }
+
             viewBindingSettings.settingsTitle.translationX = viewBindingSettings.settingsTitle.width.toFloat()
             viewBindingSettings.settingsTitle.animate()
                 .translationX(0f)
                 .setDuration(500)
                 .start()
-        }, 100)
+
 
     }
 

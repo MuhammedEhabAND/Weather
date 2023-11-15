@@ -65,11 +65,12 @@ class FavViewModel(private val iRepo: IRepo) : ViewModel() {
         }
 
     }
-    fun getAlertItem(weather: DatabaseWeather):AlarmItem =  AlarmItem(
-        LocalDateTime.now().plusSeconds(weather.time.toLong()),
-        weather.lat.toString(),
-        weather.lon.toString()
-    )
+//    fun getAlertItem(weather: DatabaseWeather):AlarmItem =  AlarmItem(
+//        weather.id,
+//        LocalDateTime.now().plusSeconds(weather.time.toLong()),
+//        weather.lat.toString(),
+//        weather.lon.toString()
+//    )
 
 
 }

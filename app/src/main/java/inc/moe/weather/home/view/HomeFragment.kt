@@ -16,6 +16,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -307,22 +308,22 @@ class HomeFragment : Fragment() {
 
     private fun animateFailureView() {
 
-        homeViewBinding.cardView.postDelayed({
+
             homeViewBinding.cardView.translationY = homeViewBinding.cardView.height.toFloat()
             homeViewBinding.cardView.animate()
                 .translationY(0f)
                 .setDuration(500)
                 .start()
-        }, 100)
 
-        homeViewBinding.errorCardView.postDelayed({
+
+
             homeViewBinding.errorCardView.translationY =
                 homeViewBinding.errorCardView.height.toFloat()
             homeViewBinding.errorCardView.animate()
                 .translationY(0f)
                 .setDuration(500)
                 .start()
-        }, 100)
+
     }
 
     private fun showData(result: ApiState.Success, isCached: Boolean) {
@@ -336,7 +337,7 @@ class HomeFragment : Fragment() {
             ).show()
         }
 
-        homeViewBinding.root.postDelayed({
+
             homeViewBinding.mapIcon.setImageResource(R.drawable.baseline_my_location_24)
             homeViewBinding.errorCardView.visibility = View.GONE
             homeViewBinding.scrollView.visibility = View.VISIBLE
@@ -364,93 +365,93 @@ class HomeFragment : Fragment() {
                 .into(homeViewBinding.weatherImage)
             dailyAdapter.submitList(result.weatherResponse.daily)
             hourlyAdapter.submitList(result.weatherResponse.hourly)
-        }, 450)
+
+
 
 
     }
 
 
     private fun animateSuccessViews() {
-        homeViewBinding.cardView.postDelayed({
-            homeViewBinding.cardView.translationY = homeViewBinding.cardView.height.toFloat()
-            homeViewBinding.cardView.animate()
-                .translationY(0f)
-                .setDuration(500)
-                .start()
-        }, 100)
-
-        homeViewBinding.weatherType.postDelayed({
             homeViewBinding.weatherType.translationX =
                 homeViewBinding.weatherType.width.toFloat()
             homeViewBinding.weatherType.animate()
                 .translationX(0f)
                 .setDuration(500)
                 .start()
-        }, 100)
 
 
-        homeViewBinding.daysRv.postDelayed({
-            homeViewBinding.daysRv.translationY = homeViewBinding.daysRv.height.toFloat()
-            homeViewBinding.daysRv.animate()
-                .translationY(0f)
-                .setDuration(500)
-                .start()
-        }, 100)
-        homeViewBinding.moreDetails.postDelayed({
+        val layoutAnimationController =
+            AnimationUtils.loadLayoutAnimation(requireContext(), R.anim.slide_left_layout)
+        homeViewBinding.hourRv.apply {
+
+            layoutAnimation = layoutAnimationController
+            scheduleLayoutAnimation()
+        }
+
+            AnimationUtils.loadLayoutAnimation(requireContext(), R.anim.fall_down_layout)
+        homeViewBinding.daysRv.apply {
+
+            layoutAnimation = layoutAnimationController
+            scheduleLayoutAnimation()
+        }
+            AnimationUtils.loadLayoutAnimation(requireContext(), R.anim.fall_down_layout)
+        homeViewBinding.cardView.apply {
+
+            layoutAnimation = layoutAnimationController
+            scheduleLayoutAnimation()
+        }
+
+
+
+
             homeViewBinding.moreDetails.translationX =
                 homeViewBinding.moreDetails.width.toFloat()
             homeViewBinding.moreDetails.animate()
                 .translationX(0f)
                 .setDuration(500)
                 .start()
-        }, 100)
-        homeViewBinding.hourlyTitle.postDelayed({
+
+
             homeViewBinding.hourlyTitle.translationX =
                 homeViewBinding.hourlyTitle.width.toFloat()
             homeViewBinding.hourlyTitle.animate()
                 .translationX(0f)
                 .setDuration(500)
                 .start()
-        }, 100)
-        homeViewBinding.cardView2.postDelayed({
-            homeViewBinding.cardView2.translationY = homeViewBinding.cardView2.height.toFloat()
-            homeViewBinding.cardView2.animate()
-                .translationY(0f)
-                .setDuration(500)
-                .start()
-        }, 100)
-        homeViewBinding.dailyTitle.postDelayed({
+        AnimationUtils.loadLayoutAnimation(requireContext(), R.anim.fall_down_layout)
+        homeViewBinding.cardView2.apply {
+
+            layoutAnimation = layoutAnimationController
+            scheduleLayoutAnimation()
+        }
+
+
+
+
             homeViewBinding.dailyTitle.translationX = homeViewBinding.dailyTitle.width.toFloat()
             homeViewBinding.dailyTitle.animate()
                 .translationX(0f)
                 .setDuration(500)
                 .start()
-        }, 100)
 
-        homeViewBinding.hourRv.postDelayed({
-            homeViewBinding.hourRv.translationX = homeViewBinding.hourRv.width.toFloat()
-            homeViewBinding.hourRv.animate()
-                .translationX(0f)
-                .setDuration(500)
-                .start()
-        }, 100)
 
-        homeViewBinding.weatherDegree.postDelayed({
             homeViewBinding.weatherDegree.translationX =
                 homeViewBinding.weatherDegree.width.toFloat()
             homeViewBinding.weatherDegree.animate()
                 .translationX(0f)
                 .setDuration(500)
                 .start()
-        }, 100)
-        homeViewBinding.weatherImage.postDelayed({
+
+
+
             homeViewBinding.weatherImage.translationX =
                 -homeViewBinding.weatherImage.width.toFloat()
             homeViewBinding.weatherImage.animate()
                 .translationX(0f)
                 .setDuration(500)
                 .start()
-        }, 100)
+
 
     }
 

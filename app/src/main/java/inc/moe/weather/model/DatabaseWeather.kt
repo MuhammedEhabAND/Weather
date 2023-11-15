@@ -3,8 +3,9 @@ package inc.moe.weather.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "weather" ,primaryKeys = ["lat", "lon"])
+@Entity(tableName = "weather")
 data class DatabaseWeather(
+
     var lon: Double=0.0,
     var lat: Double=0.0,
     var timeZone: String="",
@@ -12,6 +13,9 @@ data class DatabaseWeather(
     var temp:Double=0.0,
     var image: String="",
     var time : String = "",
-    var isScheduled :Boolean = false
+    var isScheduled :Boolean = false,
+
+    @PrimaryKey(autoGenerate = true)
+    var id: Int =0
 
 )

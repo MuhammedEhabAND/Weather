@@ -14,6 +14,7 @@ import inc.moe.weather.MainActivity
 import inc.moe.weather.R
 import inc.moe.weather.home.viewmodel.HomeViewModel
 import inc.moe.weather.home.viewmodel.HomeViewModelFactory
+import inc.moe.weather.model.DatabaseWeather
 import inc.moe.weather.model.WeatherResponse
 import inc.moe.weather.network.WeatherClient
 import inc.moe.weather.repo.Repo
@@ -37,7 +38,8 @@ class AlarmReceiver :BroadcastReceiver() {
 
 
         val lat =  intent?.getStringExtra("notification_lat") ?: return@goAsync
-        val lon =  intent?.getStringExtra("notification_lon") ?: return@goAsync
+        val lon =  intent.getStringExtra("notification_lon") ?: return@goAsync
+        val id =  intent.getIntExtra("id" , 0 )
         Log.i("TAG", "Alarm Trigger title: $lat \n Alarm Trigger title: ")
         getWeather(lat ,lon , Constants.CURRENT_SELECTED_UNIT , Constants.CURRENT_LANGUAGE ,context)
         when(data){
@@ -45,7 +47,7 @@ class AlarmReceiver :BroadcastReceiver() {
                 Log.i("TAG", "onReceive: null")
             }
             else->{
-                showNotification(context!! , data!!)
+                showNotification(context!! , data!! , id)
 
                 Log.i("TAG", "onReceive: $data")
 
@@ -64,15 +66,32 @@ class AlarmReceiver :BroadcastReceiver() {
         currentLanguage: String,
         context: Context?
     ) {
+        var databaseWeather :DatabaseWeather?= null
         val repo = Repo.getInstance(WeatherClient(), WeatherLocalSource.getInstance(context!!))
         repo.getWeather(lat ,lon ,currentSelectedUnit , currentLanguage).catch {
 
         }.collect{
             data = it
+            databaseWeather = createDatabaseWeather(it)
+            repo.updateWeather(databaseWeather!!)
         }
 
 
+
     }
+
+    private fun createDatabaseWeather(weatherResponse: WeatherResponse) :DatabaseWeather{
+
+        val title = data?.timezone
+        val weatherType = data?.current?.weather?.first()?.description
+        val weatherDegree = data?.current?.temp
+        val weatherImage = data?.current?.weather?.first()?.icon
+        return DatabaseWeather(data!!.lat ,
+            data!!.lon , title!!, weatherType!!, weatherDegree!!, weatherImage!!, isScheduled = false, time = ""
+        )
+
+    }
+
     fun BroadcastReceiver.goAsync(
         context: CoroutineContext = EmptyCoroutineContext,
         block: suspend CoroutineScope.() -> Unit
@@ -87,7 +106,7 @@ class AlarmReceiver :BroadcastReceiver() {
             }
         }
     }
-    private fun showNotification(appContext: Context , weatherResponse: WeatherResponse) {
+    private fun showNotification(appContext: Context , weatherResponse: WeatherResponse , id:Int) {
         Log.i("TAG", "showNotification: ")
         val notificationManager =
             appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager

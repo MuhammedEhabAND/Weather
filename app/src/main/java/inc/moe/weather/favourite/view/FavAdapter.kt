@@ -2,7 +2,9 @@ package inc.moe.weather.favourite.view
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -27,7 +29,7 @@ class FavAdapter(
 ) {
 
     private lateinit var favAdapterViewBinding: FavItemLayoutBinding
-    private val animatedPositions = HashSet<Int>()
+
 
     class ViewHolder(var binding: FavItemLayoutBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -48,10 +50,7 @@ class FavAdapter(
         val dummyFav = getItem(position)
 
         showData(holder, dummyFav)
-        if (!animatedPositions.contains(position)) {
-            startAnimation(holder, position)
-            animatedPositions.add(position)
-        }
+
         holder.binding.card.setOnClickListener {
             onItemClickListener?.onItemClickListener(dummyFav)
         }
@@ -94,37 +93,6 @@ class FavAdapter(
     }
 
 
-    private fun startAnimation(holder: ViewHolder, position: Int) {
-
-        if (position % 2 == 0) {
-            animateToLeft(holder)
-        } else {
-            animateToRight(holder)
-        }
-
-    }
-
-    private fun animateToRight(holder: ViewHolder) {
-
-        holder.binding.card.postDelayed({
-            holder.binding.card.translationX = -holder.binding.card.width.toFloat()
-            holder.binding.card.animate()
-                .translationX(0f)
-                .setDuration(500)
-                .start()
-        }, 100)
-    }
-
-    private fun animateToLeft(holder: ViewHolder) {
-
-        holder.binding.card.postDelayed({
-            holder.binding.card.translationX = holder.binding.card.width.toFloat()
-            holder.binding.card.animate()
-                .translationX(0f)
-                .setDuration(500)
-                .start()
-        }, 100)
-    }
 
 
     class FavDiffUtil
